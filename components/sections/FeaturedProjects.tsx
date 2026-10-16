@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import Card from '../ui/Card';
 import Badge from '../ui/Badge';
 import Button from '../ui/Button';
 import Reveal from '../ui/Reveal';
+import SafeImage from '../ui/SafeImage';
 import SectionHeader from '../ui/SectionHeader';
 import { getFeaturedProjects } from '@/lib/content';
 
@@ -30,7 +30,7 @@ export default async function FeaturedProjects() {
             <Link href={`/projects/${project.slug}`}>
               <Card hover className="group h-full">
                 <div className="relative h-48 rounded-t-lg overflow-hidden img-zoom">
-                  <Image
+                  <SafeImage
                     src={project.coverUrl}
                     alt={project.title}
                     fill

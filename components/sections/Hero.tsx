@@ -1,12 +1,13 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import Button from '../ui/Button';
 import Reveal from '../ui/Reveal';
-import { getProfile } from '@/lib/content';
+import SafeImage from '../ui/SafeImage';
+import { getProfile, getStats } from '@/lib/content';
 
 export default async function Hero() {
   const profileData = await getProfile();
+  const stats = await getStats();
   return (
     <section className="min-h-[calc(100vh-4rem)] flex items-center py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
@@ -23,7 +24,7 @@ export default async function Hero() {
                 Terbuka untuk proyek freelance
               </span>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-stone-900 dark:text-white">
-                Halo, saya <span className="marker">Najib</span>
+                Halo, saya <span className="marker">{profileData.name}</span>
               </h1>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-stone-600 dark:text-stone-300">
                 {profileData.headline}
@@ -51,16 +52,16 @@ export default async function Hero() {
             {/* Stats */}
             <div className="flex gap-8 pt-4">
               <div>
-                <p className="text-2xl font-bold text-stone-900 dark:text-white">3+</p>
-                <p className="text-sm text-stone-500 dark:text-stone-400">Tahun pengalaman</p>
+                <p className="text-2xl font-bold text-stone-900 dark:text-white">{stats.projects}</p>
+                <p className="text-sm text-stone-500 dark:text-stone-400">Proyek</p>
               </div>
               <div className="border-l border-stone-200 dark:border-stone-800 pl-8">
-                <p className="text-2xl font-bold text-stone-900 dark:text-white">15+</p>
-                <p className="text-sm text-stone-500 dark:text-stone-400">Proyek selesai</p>
+                <p className="text-2xl font-bold text-stone-900 dark:text-white">{stats.articles}</p>
+                <p className="text-sm text-stone-500 dark:text-stone-400">Artikel</p>
               </div>
               <div className="border-l border-stone-200 dark:border-stone-800 pl-8">
-                <p className="text-2xl font-bold text-stone-900 dark:text-white">20+</p>
-                <p className="text-sm text-stone-500 dark:text-stone-400">Artikel ditulis</p>
+                <p className="text-2xl font-bold text-stone-900 dark:text-white">{stats.skills}</p>
+                <p className="text-sm text-stone-500 dark:text-stone-400">Keahlian</p>
               </div>
             </div>
           </div>
@@ -77,7 +78,7 @@ export default async function Hero() {
               
               {/* Profile Image */}
               <div className="relative rounded-2xl overflow-hidden border-4 border-white dark:border-slate-800 shadow-2xl img-zoom">
-                <Image
+                <SafeImage
                   src={profileData.photoUrl}
                   alt={profileData.name}
                   width={500}

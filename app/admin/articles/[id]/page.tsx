@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import ArticleForm from '@/components/admin/ArticleForm';
 import DbNotice from '@/components/admin/DbNotice';
+import PageHeader from '@/components/admin/PageHeader';
 import { supabaseAdmin, isServiceConfigured } from '@/lib/supabase';
 import type { Article } from '@/types';
 
@@ -8,7 +9,7 @@ export const metadata = { title: 'Edit Artikel', robots: { index: false, follow:
 
 export default async function EditArticle({ params }: { params: { id: string } }) {
   if (!isServiceConfigured) return <DbNotice />;
-  const { data } = await supabaseAdmin().from('articles').select('*').eq('id', params.id).single();
+  const { data } = await supabaseAdmin().from('articles').select('*').eq('id', params.id).maybeSingle();
   if (!data) notFound();
   const r = data as Record<string, unknown>;
   const article: Article = {
@@ -25,11 +26,8 @@ export default async function EditArticle({ params }: { params: { id: string } }
   };
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <div>
-        <p className="eyebrow">Admin Panel</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight">Edit Artikel</h1>
-      </div>
+    <div className="mx-auto max-w-3xl">
+      <PageHeader title="Edit Artikel" description={article.title} />
       <ArticleForm article={article} />
     </div>
   );

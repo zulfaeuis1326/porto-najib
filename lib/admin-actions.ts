@@ -5,11 +5,30 @@ import { redirect } from 'next/navigation';
 import { supabaseAdmin } from './supabase';
 import { requireAdmin } from './session';
 
-function toList(v: FormDataEntryValue | null): string[] {
-  return String(v || '')
-    .split(/[\n,]+/)
+// Kumpulkan nilai dari satu/lebih field (textarea baris, input koma, hidden ganda).
+function toList(formData: FormData, name: string): string[] {
+  const raw = formData
+    .getAll(name)
+    .flatMap((v) => String(v || '').split(/[\n,]+/))
     .map((s) => s.trim())
     .filter(Boolean);
+  return Array.from(new Set(raw));
+}
+
+// Bersihkan URL: buang spasi, tanda kutip, dan path lokal Windows yang
+// tidak bisa dirender di browser (sumber error "path url" di CMS).
+function cleanUrl(v: FormDataEntryValue | null): string {
+  let s = String(v || '').trim();
+  if (!s) return '';
+  if ((s.startsWith('`') && s.endsWith('`')) || (s.startsWith('"') && s.endsWith('"'))) {
+    s = s.slice(1, -1).trim();
+  }
+  if (/^[a-zA-Z]:\\/.test(s) || s.includes('\\')) return '';
+  return s;
+}
+
+function cleanImageList(formData: FormData, name: string): string[] {
+  return toList(formData, name).map((u) => cleanUrl(u)).filter(Boolean);
 }
 
 function slugify(s: string) {
@@ -25,13 +44,9 @@ function authed() {
   return requireAdmin().catch(() => redirect('/login'));
 }
 
+// Segarkan seluruh pohon rute publik setelah konten berubah.
 function revalidateContent() {
-  revalidatePath('/');
-  revalidatePath('/projects');
-  revalidatePath('/about');
-  revalidatePath('/admin');
-  revalidatePath('/admin/projects');
-  revalidatePath('/admin/articles');
+  revalidatePath('/', 'layout');
 }
 
 // ---------- PROYEK ----------
@@ -39,8 +54,7 @@ export async function saveProject(prev: { error?: string } | null, formData: For
   await authed();
   const id = String(formData.get('id') || '');
   const title = String(formData.get('title') || '').trim();
-  let slug = String(formData.get('slug') || '').trim() || slugify(title);
-  slug = slugify(slug);
+  const slug = slugify(String(formData.get('slug') || '').trim() || title);
   if (!title || !slug) return { error: 'Judul dan slug wajib diisi.' };
 
   const row = {
@@ -48,11 +62,11 @@ export async function saveProject(prev: { error?: string } | null, formData: For
     title,
     summary: String(formData.get('summary') || '').trim(),
     description: String(formData.get('description') || '').trim(),
-    cover_url: String(formData.get('cover_url') || '').trim(),
-    images: toList(formData.get('images')),
-    tech_stack: toList(formData.get('tech_stack')),
-    demo_url: String(formData.get('demo_url') || '').trim(),
-    repo_url: String(formData.get('repo_url') || '').trim(),
+    cover_url: cleanUrl(formData.get('cover_url')),
+    images: cleanImageList(formData, 'images'),
+    tech_stack: toList(formData, 'tech_stack'),
+    demo_url: cleanUrl(formData.get('demo_url')),
+    repo_url: cleanUrl(formData.get('repo_url')),
     featured: formData.get('featured') === 'on',
     sort_order: Number(formData.get('sort_order') || 0) || 0,
     created_at: String(formData.get('created_at') || '') || new Date().toISOString().slice(0, 10),
@@ -80,8 +94,7 @@ export async function saveArticle(prev: { error?: string } | null, formData: For
   await authed();
   const id = String(formData.get('id') || '');
   const title = String(formData.get('title') || '').trim();
-  let slug = String(formData.get('slug') || '').trim() || slugify(title);
-  slug = slugify(slug);
+  const slug = slugify(String(formData.get('slug') || '').trim() || title);
   if (!title || !slug) return { error: 'Judul dan slug wajib diisi.' };
 
   const row = {
@@ -89,9 +102,9 @@ export async function saveArticle(prev: { error?: string } | null, formData: For
     title,
     excerpt: String(formData.get('excerpt') || '').trim(),
     content: String(formData.get('content') || '').trim(),
-    cover_url: String(formData.get('cover_url') || '').trim(),
+    cover_url: cleanUrl(formData.get('cover_url')),
     category: String(formData.get('category') || '').trim(),
-    tags: toList(formData.get('tags')),
+    tags: toList(formData, 'tags'),
     read_time: Number(formData.get('read_time') || 5) || 5,
     published_at: String(formData.get('published_at') || '') || new Date().toISOString().slice(0, 10),
   };
@@ -102,8 +115,6 @@ export async function saveArticle(prev: { error?: string } | null, formData: For
     : await db.from('articles').insert(row);
   if (error) return { error: 'Gagal menyimpan: ' + error.message };
   revalidateContent();
-  revalidatePath('/admin/articles');
-  revalidatePath('/articles');
   redirect('/admin/articles');
 }
 
@@ -112,7 +123,6 @@ export async function deleteArticle(id: string) {
   const { error } = await supabaseAdmin().from('articles').delete().eq('id', id);
   if (error) return { error: error.message };
   revalidateContent();
-  revalidatePath('/articles');
   return { ok: true };
 }
 
@@ -124,8 +134,8 @@ export async function saveProfile(prev: { error?: string } | null, formData: For
     name: String(formData.get('name') || '').trim(),
     headline: String(formData.get('headline') || '').trim(),
     bio: String(formData.get('bio') || '').trim(),
-    photo_url: String(formData.get('photo_url') || '').trim(),
-    cv_url: String(formData.get('cv_url') || '').trim(),
+    photo_url: cleanUrl(formData.get('photo_url')),
+    cv_url: cleanUrl(formData.get('cv_url')),
     location: String(formData.get('location') || '').trim(),
     email: String(formData.get('email') || '').trim(),
     links: {
@@ -138,9 +148,7 @@ export async function saveProfile(prev: { error?: string } | null, formData: For
   if (!row.name) return { error: 'Nama wajib diisi.' };
   const { error } = await supabaseAdmin().from('profiles').upsert(row);
   if (error) return { error: 'Gagal menyimpan: ' + error.message };
-  revalidatePath('/');
-  revalidatePath('/about');
-  revalidatePath('/contact');
+  revalidateContent();
   return { ok: true };
 }
 

@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { ExternalLink, Github, Search } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import Reveal from '@/components/ui/Reveal';
+import SafeImage from '@/components/ui/SafeImage';
 import type { Project } from '@/types';
 
 export default function ProjectExplorer({ projects }: { projects: Project[] }) {
@@ -81,7 +81,7 @@ export default function ProjectExplorer({ projects }: { projects: Project[] }) {
             <Reveal key={project.id} delay={(i % 3) * 90}>
             <Card hover className="group h-full">
               <div className="relative h-48 rounded-t-lg overflow-hidden img-zoom">
-                <Image
+                <SafeImage
                   src={project.coverUrl}
                   alt={project.title}
                   fill

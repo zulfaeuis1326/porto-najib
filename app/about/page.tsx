@@ -1,10 +1,10 @@
 ﻿import { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 import { Download, MapPin, Mail, Briefcase, GraduationCap } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Reveal from '@/components/ui/Reveal';
+import SafeImage from '@/components/ui/SafeImage';
 import { getProfile, getExperiencesByType } from '@/lib/content';
 import { formatDate, calculateDuration } from '@/lib/utils';
 
@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   title: 'Tentang Saya - Najib',
   description: 'Kenali lebih dekat tentang Najib, pengalaman kerja, pendidikan, dan perjalanan karir sebagai Full Stack Developer.',
 };
+
+export const dynamic = 'force-dynamic';
 
 export default async function AboutPage() {
   const profileData = await getProfile();
@@ -36,7 +38,7 @@ export default async function AboutPage() {
         <Card className="p-8 mb-12">
           <div className="flex flex-col md:flex-row gap-8 items-start">
             <div className="relative w-48 h-48 rounded-2xl overflow-hidden flex-shrink-0 mx-auto md:mx-0">
-              <Image
+              <SafeImage
                 src={profileData.photoUrl}
                 alt={profileData.name}
                 fill

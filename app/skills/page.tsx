@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: 'Daftar skill dan teknologi yang saya kuasai sebagai Full Stack Developer.',
 };
 
+export const dynamic = 'force-dynamic';
+
 const categoryLabels = {
   frontend: 'Frontend Development',
   backend: 'Backend Development',

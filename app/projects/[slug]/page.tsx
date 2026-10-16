@@ -1,13 +1,16 @@
 import { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, ExternalLink, Github, Calendar } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import Card from '@/components/ui/Card';
+import SafeImage from '@/components/ui/SafeImage';
 import { getProjects, getProjectBySlug } from '@/lib/content';
 import { formatDate } from '@/lib/utils';
+
+// Konten dikelola lewat CMS — selalu ambil data terbaru, jangan cache statis.
+export const dynamic = 'force-dynamic';
 
 interface ProjectPageProps {
   params: {
@@ -18,7 +21,7 @@ interface ProjectPageProps {
 // Generate metadata
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
   const project = await getProjectBySlug(params.slug);
-  
+
   if (!project) {
     return {
       title: 'Project Not Found'
@@ -31,19 +34,14 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
   };
 }
 
-// Generate static paths
-export async function generateStaticParams() {
-  return (await getProjects()).map((project) => ({
-    slug: project.slug,
-  }));
-}
-
 export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   const project = await getProjectBySlug(params.slug);
 
   if (!project) {
     notFound();
   }
+
+  const relatedProjects = (await getProjects()).filter((p) => p.id !== project.id).slice(0, 2);
 
   return (
     <div className="py-20">
@@ -63,7 +61,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
               <span>{formatDate(project.createdAt)}</span>
             </div>
           </div>
-          
+
           <p className="text-xl text-slate-600 dark:text-slate-400 leading-relaxed">
             {project.summary}
           </p>
@@ -71,12 +69,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
         {/* Cover Image */}
         <div className="relative h-[400px] rounded-2xl overflow-hidden mb-8">
-          <Image
-            src={project.coverUrl}
-            alt={project.title}
-            fill
-            className="object-cover"
-          />
+          <SafeImage src={project.coverUrl} alt={project.title} fill className="object-cover" />
         </div>
 
         {/* Links */}
@@ -100,24 +93,28 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
         </div>
 
         {/* Tech Stack */}
-        <Card className="p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">Tech Stack</h2>
-          <div className="flex flex-wrap gap-2">
-            {project.techStack.map((tech) => (
-              <Badge key={tech} variant="info">{tech}</Badge>
-            ))}
-          </div>
-        </Card>
+        {project.techStack.length > 0 && (
+          <Card className="p-6 mb-8">
+            <h2 className="text-xl font-semibold mb-4">Tech Stack</h2>
+            <div className="flex flex-wrap gap-2">
+              {project.techStack.map((tech) => (
+                <Badge key={tech} variant="info">{tech}</Badge>
+              ))}
+            </div>
+          </Card>
+        )}
 
         {/* Description */}
-        <Card className="p-6 mb-8">
-          <div 
-            className="prose prose-slate dark:prose-invert max-w-none"
-            dangerouslySetInnerHTML={{ 
-              __html: project.description.replace(/\n/g, '<br />') 
-            }}
-          />
-        </Card>
+        {project.description && (
+          <Card className="p-6 mb-8">
+            <div
+              className="prose prose-slate dark:prose-invert max-w-none"
+              dangerouslySetInnerHTML={{
+                __html: project.description.replace(/\n/g, '<br />')
+              }}
+            />
+          </Card>
+        )}
 
         {/* Gallery */}
         {project.images.length > 0 && (
@@ -126,12 +123,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {project.images.map((image, index) => (
                 <div key={index} className="relative h-64 rounded-lg overflow-hidden">
-                  <Image
-                    src={image}
-                    alt={`${project.title} screenshot ${index + 1}`}
-                    fill
-                    className="object-cover"
-                  />
+                  <SafeImage src={image} alt={`${project.title} screenshot ${index + 1}`} fill className="object-cover" />
                 </div>
               ))}
             </div>
@@ -139,16 +131,15 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
         )}
 
         {/* Related Projects */}
-        <div>
-          <h2 className="text-2xl font-bold mb-6">Proyek Lainnya</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {((await getProjects())
-              .filter(p => p.id !== project.id)
-              .slice(0, 2)).map((relatedProject) => (
+        {relatedProjects.length > 0 && (
+          <div>
+            <h2 className="text-2xl font-bold mb-6">Proyek Lainnya</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {relatedProjects.map((relatedProject) => (
                 <Link key={relatedProject.id} href={`/projects/${relatedProject.slug}`}>
                   <Card hover>
                     <div className="relative h-40 rounded-t-lg overflow-hidden">
-                      <Image
+                      <SafeImage
                         src={relatedProject.coverUrl}
                         alt={relatedProject.title}
                         fill
@@ -164,8 +155,9 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                   </Card>
                 </Link>
               ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

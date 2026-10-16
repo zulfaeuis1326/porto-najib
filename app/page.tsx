@@ -5,6 +5,9 @@ import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import { ArrowRight } from 'lucide-react';
 
+// Beranda selalu menampilkan data terbaru dari CMS.
+export const dynamic = 'force-dynamic';
+
 export default function HomePage() {
   return (
     <>

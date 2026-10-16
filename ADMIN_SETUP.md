@@ -37,17 +37,40 @@ Contoh ada di `.env.example`.
 ## 4. Pakai
 
 - Login: link kecil **Admin** di baris copyright footer → `/login`
-- Sesudah login, link itu berubah jadi **Dashboard**
-- Dashboard (`/admin`): statistik konten + pesan terbaru + jalan pintas
-- **Proyek** (`/admin/projects`): tambah / edit / hapus, centang Unggulan
-- **Artikel** (`/admin/articles`): tulis / edit / hapus
-- **Profil** (`/admin/profile`): nama, bio, foto, CV, link sosmed
+- Sesudah login, link itu berubah menjadi **Dashboard**
+- Dashboard (`/admin`): statistik konten, pesan terbaru, status situs, aksi cepat
+- **Proyek** (`/admin/projects`): tambah / edit / hapus, unggah cover + galeri, tandai Unggulan
+- **Artikel** (`/admin/articles`): tulis / edit / hapus, unggah cover
+- **Profil** (`/admin/profile`): nama, bio, **unggah foto & CV (PDF)**, link sosmed
 - **Pesan Masuk** (`/admin/inbox`): pesan dari form kontak, tandai dibaca, balas via email, hapus
-- Setiap simpan, halaman publik terkait otomatis di-refresh (revalidate)
+
+### Unggah gambar & berkas
+
+Setiap kolom gambar/berkas punya dua pilihan:
+1. **Unggah** — pilih dari perangkat (atau tarik & lepas). Maks 6 MB, format JPG/PNG/WebP/GIF/SVG (PDF untuk CV).
+2. **Pakai URL** — tempel tautan bila ingin memakai gambar dari luar.
+
+Berkas diunggah ke **Supabase Storage** (bucket `media`, publik). Bucket dibuat
+otomatis saat unggahan pertama — tidak perlu diatur manual.
+
+### Konten dari database, bukan dummy
+
+Seluruh halaman publik (beranda, proyek, artikel, tentang, keahlian, kontak) dibaca
+langsung dari Supabase setiap kali dibuka. Jadi setiap perubahan tersimpan di CMS
+langsung terlihat di situs — tidak ada data contoh yang "nyangkut".
+
+> Catatan: isi `supabase/seed.sql` hanyalah contoh awal (Supabase, proyek, artikel
+> contoh). Ganti semuanya lewat dashboard dengan kontenmu sendiri.
+
+## 5. Lokal (opsional)
+
+Supaya dev lokal juga memakai database (bukan data contoh), buat `.env.local`
+(sama isinya seperti `.env.example`) lalu `npm run dev`.
 
 ## Catatan keamanan
 
 - `SUPABASE_SERVICE_ROLE_KEY` dan `SESSION_SECRET` tidak pernah ke-commit (`.env.local` di-gitignore).
 - RLS aktif: publik hanya bisa baca konten + kirim pesan. Tulis/hapus hanya lewat server admin.
+- Unggahan hanya bisa dilakukan admin yang sudah login (dicek di server).
 - Kalau `SESSION_SECRET` diganti, semua sesi admin logout otomatis.
 - Skill & pengalaman masih dari file `data/` (jarang berubah) — belum masuk CMS.

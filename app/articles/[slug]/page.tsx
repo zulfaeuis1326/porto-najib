@@ -1,13 +1,15 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, Calendar, Clock } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import Card from '@/components/ui/Card';
 import Reveal from '@/components/ui/Reveal';
-import { getArticleBySlug, getArticleSlugs, getArticles } from '@/lib/content';
+import SafeImage from '@/components/ui/SafeImage';
+import { getArticleBySlug, getArticles } from '@/lib/content';
 import { formatDate } from '@/lib/utils';
+
+export const dynamic = 'force-dynamic';
 
 interface ArticlePageProps {
   params: { slug: string };
@@ -17,10 +19,6 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   const article = await getArticleBySlug(params.slug);
   if (!article) return { title: 'Artikel Tidak Ditemukan' };
   return { title: `${article.title} - Najib`, description: article.excerpt };
-}
-
-export async function generateStaticParams() {
-  return (await getArticleSlugs()).map((slug) => ({ slug }));
 }
 
 export default async function ArticleDetailPage({ params }: ArticlePageProps) {
@@ -57,7 +55,7 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
 
         <Reveal>
           <div className="relative h-[320px] sm:h-[400px] rounded-2xl overflow-hidden mb-8 img-zoom">
-            <Image src={article.coverUrl} alt={article.title} fill className="object-cover" />
+            <SafeImage src={article.coverUrl} alt={article.title} fill className="object-cover" />
           </div>
         </Reveal>
 
@@ -86,7 +84,7 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
                 <Link key={o.id} href={`/articles/${o.slug}`}>
                   <Card hover className="group h-full">
                     <div className="relative h-40 rounded-t-lg overflow-hidden img-zoom">
-                      <Image src={o.coverUrl} alt={o.title} fill className="object-cover" />
+                      <SafeImage src={o.coverUrl} alt={o.title} fill className="object-cover" />
                     </div>
                     <div className="p-4">
                       <h3 className="font-semibold mb-2 line-clamp-1">{o.title}</h3>

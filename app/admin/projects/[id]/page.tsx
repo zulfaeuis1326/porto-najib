@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import ProjectForm from '@/components/admin/ProjectForm';
 import DbNotice from '@/components/admin/DbNotice';
+import PageHeader from '@/components/admin/PageHeader';
 import { supabaseAdmin, isServiceConfigured } from '@/lib/supabase';
 import type { Project } from '@/types';
 
@@ -8,7 +9,7 @@ export const metadata = { title: 'Edit Proyek', robots: { index: false, follow: 
 
 export default async function EditProject({ params }: { params: { id: string } }) {
   if (!isServiceConfigured) return <DbNotice />;
-  const { data } = await supabaseAdmin().from('projects').select('*').eq('id', params.id).single();
+  const { data } = await supabaseAdmin().from('projects').select('*').eq('id', params.id).maybeSingle();
   if (!data) notFound();
   const r = data as Record<string, unknown>;
   const project: Project = {
@@ -28,11 +29,8 @@ export default async function EditProject({ params }: { params: { id: string } }
   };
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <div>
-        <p className="eyebrow">Admin Panel</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight">Edit Proyek</h1>
-      </div>
+    <div className="mx-auto max-w-3xl">
+      <PageHeader title="Edit Proyek" description={project.title} />
       <ProjectForm project={project} />
     </div>
   );

@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: 'Hubungi saya untuk kolaborasi, proyek freelance, atau sekadar bertanya tentang web development.',
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function ContactPage() {
   const profileData = await getProfile();
   const socialLinks = [

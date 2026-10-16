@@ -113,3 +113,17 @@ CREATE POLICY "public read experiences" ON experiences FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "public insert messages" ON messages;
 CREATE POLICY "public insert messages" ON messages FOR INSERT WITH CHECK (true);
+
+-- ============================================================
+-- Penyimpanan berkas (gambar & CV) — bucket publik "media".
+-- Bucket ini juga dibuat otomatis oleh aplikasi saat unggahan pertama,
+-- jadi bagian ini opsional (jalankan bila ingin menyiapkannya manual).
+-- ============================================================
+INSERT INTO storage.buckets (id, name, public, file_size_limit)
+VALUES ('media', 'media', true, 6291456)
+ON CONFLICT (id) DO UPDATE SET public = true;
+
+DROP POLICY IF EXISTS "public read media" ON storage.objects;
+CREATE POLICY "public read media" ON storage.objects
+  FOR SELECT USING (bucket_id = 'media');
+

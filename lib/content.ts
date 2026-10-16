@@ -192,3 +192,13 @@ export async function getExperiencesByType() {
     education: all.filter((e) => e.type === 'education'),
   };
 }
+
+// Angka nyata untuk beranda (bukan statistik hardcode).
+export async function getStats() {
+  const [projects, articles, skills] = await Promise.all([getProjects(), getArticles(), getSkills()]);
+  return {
+    projects: projects.length,
+    articles: articles.length,
+    skills: skills.length,
+  };
+}

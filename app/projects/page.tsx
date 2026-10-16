@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   description: 'Daftar proyek yang telah dikerjakan: aplikasi web, dashboard, dan lainnya.',
 };
 
+// Selalu ambil dari CMS.
+export const dynamic = 'force-dynamic';
+
 export default async function ProjectsPage() {
   const projects = await getProjects();
 

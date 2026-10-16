@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Calendar, Clock } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Reveal from '@/components/ui/Reveal';
+import SafeImage from '@/components/ui/SafeImage';
 import { getArticles } from '@/lib/content';
 import { formatDate } from '@/lib/utils';
 
@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   title: 'Artikel - Najib',
   description: 'Kumpulan artikel seputar web development: tutorial, best practices, dan perbandingan teknologi.',
 };
+
+// Selalu ambil dari CMS.
+export const dynamic = 'force-dynamic';
 
 export default async function ArticlesPage() {
   const articles = await getArticles();
@@ -38,7 +41,7 @@ export default async function ArticlesPage() {
               <Link href={`/articles/${article.slug}`}>
                 <Card hover className="group h-full">
                   <div className="relative h-48 rounded-t-lg overflow-hidden img-zoom">
-                    <Image src={article.coverUrl} alt={article.title} fill className="object-cover" />
+                    <SafeImage src={article.coverUrl} alt={article.title} fill className="object-cover" />
                   </div>
                   <div className="p-6">
                     <div className="flex items-center gap-2 mb-3">
