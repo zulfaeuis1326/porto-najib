@@ -152,6 +152,117 @@ export async function saveProfile(prev: { error?: string } | null, formData: For
   return { ok: true };
 }
 
+// ---------- SKILL ----------
+const SKILL_CATEGORIES = ['frontend', 'backend', 'tools', 'other'];
+const SKILL_LEVELS = ['beginner', 'intermediate', 'advanced', 'expert'];
+
+export async function saveSkill(prev: { error?: string } | null, formData: FormData) {
+  await authed();
+  const id = String(formData.get('id') || '');
+  const name = String(formData.get('name') || '').trim();
+  if (!name) return { error: 'Nama skill wajib diisi.' };
+  const category = String(formData.get('category') || 'other');
+  const level = String(formData.get('level') || 'beginner');
+
+  const row = {
+    name,
+    category: SKILL_CATEGORIES.includes(category) ? category : 'other',
+    level: SKILL_LEVELS.includes(level) ? level : 'beginner',
+    icon: String(formData.get('icon') || '').trim(),
+    sort_order: Number(formData.get('sort_order') || 0) || 0,
+  };
+
+  const db = supabaseAdmin();
+  const { error } = id
+    ? await db.from('skills').update(row).eq('id', id)
+    : await db.from('skills').insert(row);
+  if (error) return { error: 'Gagal menyimpan: ' + error.message };
+  revalidateContent();
+  redirect('/admin/skills');
+}
+
+export async function deleteSkill(id: string) {
+  await authed();
+  const { error } = await supabaseAdmin().from('skills').delete().eq('id', id);
+  if (error) return { error: error.message };
+  revalidateContent();
+  return { ok: true };
+}
+
+// Masukkan daftar skill contoh (data/skills.ts) ke database.
+export async function importDefaultSkills() {
+  await authed();
+  const { skillsData } = await import('@/data/skills');
+  const rows = skillsData.map((s, i) => ({
+    name: s.name,
+    category: s.category,
+    level: s.level,
+    icon: s.icon || '',
+    sort_order: i,
+  }));
+  const { error } = await supabaseAdmin().from('skills').insert(rows);
+  if (error) return { error: 'Gagal mengimpor: ' + error.message };
+  revalidateContent();
+  return { ok: true };
+}
+
+// ---------- PENGALAMAN ----------
+export async function saveExperience(prev: { error?: string } | null, formData: FormData) {
+  await authed();
+  const id = String(formData.get('id') || '');
+  const title = String(formData.get('title') || '').trim();
+  if (!title) return { error: 'Judul wajib diisi.' };
+  const type = String(formData.get('type') || 'work');
+  const current = formData.get('current') === 'on';
+
+  const row = {
+    type: type === 'education' ? 'education' : 'work',
+    title,
+    organization: String(formData.get('organization') || '').trim(),
+    start_date: String(formData.get('start_date') || '') || null,
+    end_date: current ? null : String(formData.get('end_date') || '') || null,
+    description: String(formData.get('description') || '').trim(),
+    current,
+    sort_order: Number(formData.get('sort_order') || 0) || 0,
+  };
+
+  const db = supabaseAdmin();
+  const { error } = id
+    ? await db.from('experiences').update(row).eq('id', id)
+    : await db.from('experiences').insert(row);
+  if (error) return { error: 'Gagal menyimpan: ' + error.message };
+  revalidateContent();
+  redirect('/admin/experiences');
+}
+
+export async function deleteExperience(id: string) {
+  await authed();
+  const { error } = await supabaseAdmin().from('experiences').delete().eq('id', id);
+  if (error) return { error: error.message };
+  revalidateContent();
+  return { ok: true };
+}
+
+// Masukkan daftar pengalaman contoh (data/experiences.ts) ke database.
+export async function importDefaultExperiences() {
+  await authed();
+  const { experiencesData } = await import('@/data/experiences');
+  const rows = experiencesData.map((e, i) => ({
+    type: e.type,
+    title: e.title,
+    organization: e.organization,
+    start_date: e.startDate || null,
+    end_date: e.current ? null : e.endDate || null,
+    description: e.description,
+    current: e.current,
+    sort_order: i,
+  }));
+  const { error } = await supabaseAdmin().from('experiences').insert(rows);
+  if (error) return { error: 'Gagal mengimpor: ' + error.message };
+  revalidateContent();
+  return { ok: true };
+}
+
 // ---------- PESAN MASUK ----------
 export async function setMessageRead(id: string, read: boolean) {
   await authed();

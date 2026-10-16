@@ -59,3 +59,41 @@ export function supabaseAdmin(): SupabaseClient {
   }
   return adminClient;
 }
+
+// ---------- DIAGNOSTIK ----------
+// Membaca "role" dari isi kunci Supabase agar mudah tahu apakah
+// SUPABASE_SERVICE_ROLE_KEY benar-benar kunci service_role.
+export function keyRole(key: string): string {
+  if (!key) return '(kosong)';
+  if (key.startsWith('sb_publishable_')) return 'anon';
+  if (key.startsWith('sb_secret_')) return 'service_role';
+  const parts = key.split('.');
+  if (parts.length === 3) {
+    try {
+      const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const json = Buffer.from(b64, 'base64').toString('utf8');
+      const payload = JSON.parse(json) as { role?: string };
+      if (payload.role) return payload.role;
+      return '(tanpa role)';
+    } catch {
+      return '(tidak terbaca)';
+    }
+  }
+  return '(format tidak dikenal)';
+}
+
+export function supabaseDiagnostics() {
+  const serviceRole = keyRole(supabaseServiceKey);
+  return {
+    url: supabaseUrl,
+    urlLooksValid: /^https:\/\/[a-z0-9-]+\.supabase\.(co|in)$/i.test(supabaseUrl),
+    hasAnon: Boolean(supabaseAnonKey),
+    hasService: Boolean(supabaseServiceKey),
+    anonRole: keyRole(supabaseAnonKey),
+    serviceRole,
+    // Penyebab paling umum error "permission denied for table ..."
+    serviceKeyWrong:
+      Boolean(supabaseServiceKey) &&
+      (supabaseServiceKey === supabaseAnonKey || serviceRole === 'anon'),
+  };
+}

@@ -8,6 +8,8 @@ import {
   Newspaper,
   User,
   Inbox,
+  Sparkles,
+  Briefcase,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -28,6 +30,8 @@ const groups: { title: string; items: NavItem[] }[] = [
     items: [
       { href: '/admin/projects', label: 'Proyek', icon: FolderKanban },
       { href: '/admin/articles', label: 'Artikel', icon: Newspaper },
+      { href: '/admin/skills', label: 'Skill', icon: Sparkles },
+      { href: '/admin/experiences', label: 'Pengalaman', icon: Briefcase },
     ],
   },
   {

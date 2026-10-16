@@ -73,4 +73,19 @@ Supaya dev lokal juga memakai database (bukan data contoh), buat `.env.local`
 - RLS aktif: publik hanya bisa baca konten + kirim pesan. Tulis/hapus hanya lewat server admin.
 - Unggahan hanya bisa dilakukan admin yang sudah login (dicek di server).
 - Kalau `SESSION_SECRET` diganti, semua sesi admin logout otomatis.
-- Skill & pengalaman masih dari file `data/` (jarang berubah) — belum masuk CMS.
+- Skill & pengalaman sudah bisa dikelola dari CMS (`/admin/skills`, `/admin/experiences`).
+
+## 6. Jika muncul error saat menyimpan
+
+Dashboard menampilkan panel **Diagnostik koneksi database** bila ada masalah.
+Berikut arti pesan yang paling sering muncul:
+
+| Pesan error | Artinya | Perbaikan |
+| --- | --- | --- |
+| `Invalid path specified in request URL` (PGRST125) | `NEXT_PUBLIC_SUPABASE_URL` berisi path tambahan, mis. `…/rest/v1` | Isi hanya `https://<ref>.supabase.co` (tanpa `/rest/v1`, tanpa `/` di akhir). Kode aplikasi juga sudah menormalkan ini otomatis. |
+| `permission denied for table profiles` | Role yang dipakai tidak punya hak akses tabel (ini soal GRANT, bukan RLS) | Biasanya `SUPABASE_SERVICE_ROLE_KEY` berisi kunci **anon**, bukan **service_role**. Ambil di Supabase → Project Settings → API. |
+| `new row violates row-level security policy` | Kunci sudah anon yang benar, tapi RLS memang melarang tulis | Pastikan yang dipakai untuk menulis adalah kunci service_role. |
+
+Untuk `permission denied`, jalankan ulang bagian **IZIN (GRANT)** di
+`supabase/schema.sql` pada SQL Editor Supabase — bagian itu memberi hak akses
+tabel ke role `anon`, `authenticated`, dan `service_role`.

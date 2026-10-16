@@ -7,9 +7,10 @@ import {
   Plus,
   ArrowRight,
   ArrowUpRight,
+  AlertTriangle,
   type LucideIcon,
 } from 'lucide-react';
-import { supabaseAdmin, isServiceConfigured } from '@/lib/supabase';
+import { supabaseAdmin, isServiceConfigured, supabaseDiagnostics } from '@/lib/supabase';
 import DbNotice from '@/components/admin/DbNotice';
 import PageHeader from '@/components/admin/PageHeader';
 import { btnPrimary, btnOutline } from '@/components/admin/ui';
@@ -83,6 +84,40 @@ function Panel({
   );
 }
 
+function DiagPanel({
+  items,
+  hint,
+  error,
+}: {
+  items: { label: string; value: string; ok: boolean }[];
+  hint?: string;
+  error?: string;
+}) {
+  return (
+    <section className="rounded-2xl border border-amber-300 bg-amber-50 p-5">
+      <h2 className="flex items-center gap-2 text-sm font-bold text-amber-900">
+        <AlertTriangle className="h-4 w-4" /> Diagnostik koneksi database
+      </h2>
+      <ul className="mt-3 space-y-2 text-sm">
+        {items.map((it) => (
+          <li key={it.label} className="flex items-start justify-between gap-4">
+            <span className="text-amber-800">{it.label}</span>
+            <span className={`text-right font-semibold ${it.ok ? 'text-emerald-700' : 'text-red-700'}`}>
+              {it.value}
+            </span>
+          </li>
+        ))}
+      </ul>
+      {hint && <p className="mt-3 text-xs leading-relaxed text-amber-900">{hint}</p>}
+      {error && (
+        <p className="mt-3 overflow-x-auto rounded-lg bg-white/80 p-3 font-mono text-xs text-red-700">
+          {error}
+        </p>
+      )}
+    </section>
+  );
+}
+
 interface Msg {
   id: string;
   name: string;
@@ -118,6 +153,10 @@ export default async function AdminDashboard() {
   const totalMessages = messagesRes.count ?? 0;
   const recent = (recentRes.data || []) as Msg[];
   const profile = profileRes.data as { name?: string; headline?: string } | null;
+
+  const diag = supabaseDiagnostics();
+  const profileError = profileRes.error?.message;
+  const diagProblem = diag.serviceKeyWrong || Boolean(profileError) || !diag.urlLooksValid;
 
   const stats: StatCardProps[] = [
     {
@@ -185,6 +224,34 @@ export default async function AdminDashboard() {
         ))}
       </div>
 
+      {diagProblem && (
+        <DiagPanel
+          items={[
+            {
+              label: 'URL proyek',
+              value: diag.url ? diag.url.replace(/^https?:\/\//, '') : '(kosong)',
+              ok: diag.urlLooksValid,
+            },
+            {
+              label: 'Kunci publik (anon)',
+              value: diag.hasAnon ? diag.anonRole : '(kosong)',
+              ok: diag.hasAnon && diag.anonRole === 'anon',
+            },
+            {
+              label: 'Kunci admin (service)',
+              value: diag.hasService ? diag.serviceRole : '(kosong)',
+              ok: diag.serviceRole === 'service_role',
+            },
+          ]}
+          hint={
+            diag.serviceKeyWrong
+              ? 'SUPABASE_SERVICE_ROLE_KEY tampaknya berisi kunci anon (bukan service_role). Ambil kunci "service_role" di Supabase → Project Settings → API, pasang di Vercel → Environment Variables (Production), lalu deploy ulang.'
+              : undefined
+          }
+          error={profileError}
+        />
+      )}
+
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <Panel title="Pesan Terbaru" action={{ href: '/admin/inbox', label: 'Buka inbox' }}>
@@ -247,6 +314,8 @@ export default async function AdminDashboard() {
               {[
                 { href: '/admin/projects/new', label: 'Tambah proyek baru' },
                 { href: '/admin/articles/new', label: 'Tulis artikel' },
+                { href: '/admin/skills', label: 'Kelola skill' },
+                { href: '/admin/experiences', label: 'Kelola pengalaman' },
                 { href: '/admin/profile', label: 'Perbarui profil' },
               ].map((a) => (
                 <Link

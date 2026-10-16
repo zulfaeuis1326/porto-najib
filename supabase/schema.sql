@@ -127,3 +127,26 @@ DROP POLICY IF EXISTS "public read media" ON storage.objects;
 CREATE POLICY "public read media" ON storage.objects
   FOR SELECT USING (bucket_id = 'media');
 
+-- ============================================================
+-- IZIN (GRANT) — WAJIB.
+-- Bila bagian ini tidak dijalankan, muncul error:
+--   "permission denied for table profiles"
+-- karena role tidak punya hak akses tabel (ini berbeda dari RLS).
+-- Catatan: service_role dipakai server admin untuk menulis.
+-- anon/authenticated hanya diberi hak baca (tetap dibatasi RLS).
+-- ============================================================
+GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
+
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO anon, authenticated;
+GRANT INSERT ON messages TO anon, authenticated;
+GRANT ALL ON ALL TABLES IN SCHEMA public TO service_role;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated, service_role;
+
+-- Berlaku juga untuk tabel yang dibuat di masa depan.
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+  GRANT SELECT ON TABLES TO anon, authenticated;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+  GRANT ALL ON TABLES TO service_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+  GRANT ALL ON SEQUENCES TO anon, authenticated, service_role;
+
