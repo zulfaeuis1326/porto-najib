@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3b82f6"/>
+      <stop offset="1" stop-color="#2a5eb1"/>
+    </linearGradient>
+  </defs>
+  <rect width="500" height="500" fill="url(#g)"/>
+  <circle cx="425" cy="60" r="140" fill="#ffffff" opacity="0.08"/>
+  <circle cx="40" cy="475" r="100" fill="#ffffff" opacity="0.06"/>
+  <rect x="0" y="494" width="500" height="6" fill="#ffffff" opacity="0.35"/>
+  <text x="250" y="244" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="bold" fill="#ffffff">N</text>
+  <text x="250" y="273.25" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#ffffff" opacity="0.75">Najib</text>
+</svg>

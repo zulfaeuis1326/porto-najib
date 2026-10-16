@@ -1,0 +1,48 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /FB 6 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 694 >>
+stream
+BT
+/FB 26 Tf 72 770 Td (Najib) Tj
+/F1 13 Tf 72 736 Td (Full Stack Developer & Technical Writer) Tj
+/F1 11 Tf 72 710 Td (Jakarta, Indonesia | najib@example.com) Tj
+/FB 15 Tf 72 680 Td (Ringkasan) Tj
+/F1 11 Tf 72 658 Td (Full Stack Developer yang fokus membangun aplikasi web modern) Tj
+/F1 11 Tf 72 642 Td (dengan Next.js, TypeScript, dan Supabase.) Tj
+/FB 15 Tf 72 614 Td (Keahlian) Tj
+/F1 11 Tf 72 592 Td (Next.js - React - TypeScript - TailwindCSS - Supabase - PostgreSQL) Tj
+/FB 15 Tf 72 564 Td (Pengalaman) Tj
+/F1 11 Tf 72 542 Td (Frontend Developer - membangun company profile dan landing page.) Tj
+/F1 11 Tf 72 526 Td (Full Stack Developer - dashboard admin dan aplikasi realtime.) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000000995 00000 n 
+0000001065 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+1140
+%%EOF
