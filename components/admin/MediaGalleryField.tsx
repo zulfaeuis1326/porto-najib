@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import { Upload, Link2, Loader2, X, Plus, ArrowLeft, ArrowRight } from 'lucide-react';
 import SafeImage from '@/components/ui/SafeImage';
+import { fileToCompressedDataUrl } from '@/lib/local-image';
 
 interface MediaGalleryFieldProps {
   /** nama field FormData — dikirim sebagai banyak nilai (getAll) */
@@ -32,6 +33,7 @@ export default function MediaGalleryField({
   const [url, setUrl] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
   function addUrl() {
@@ -59,12 +61,27 @@ export default function MediaGalleryField({
     if (!files || files.length === 0) return;
     setBusy(true);
     setError('');
+    setNotice('');
     try {
       const urls: string[] = [];
+      let usedLocal = false;
       for (const file of Array.from(files)) {
-        urls.push(await uploadFile(file));
+        try {
+          urls.push(await uploadFile(file));
+        } catch (e) {
+          // Cadangan: gambar disimpan langsung sebagai data URL.
+          if (file.type.startsWith('image/')) {
+            urls.push(await fileToCompressedDataUrl(file));
+            usedLocal = true;
+          } else {
+            throw e;
+          }
+        }
       }
       setItems((prev) => [...prev, ...urls]);
+      if (usedLocal) {
+        setNotice('Sebagian gambar tersimpan langsung ke database (penyimpanan cloud belum aktif).');
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Gagal mengunggah.');
     } finally {
@@ -167,6 +184,7 @@ export default function MediaGalleryField({
       ))}
 
       {hint && <p className="mt-1.5 text-xs text-stone-500">{hint}</p>}
+      {notice && <p className="mt-1 text-xs font-medium text-amber-600">{notice}</p>}
       {error && <p className="mt-1 text-xs font-medium text-red-600">{error}</p>}
     </div>
   );

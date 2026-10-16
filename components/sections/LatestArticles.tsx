@@ -69,12 +69,10 @@ export default async function LatestArticles() {
         {/* View All Button */}
         <Reveal>
         <div className="text-center">
-          <Link href="/articles">
-            <Button variant="outline" size="lg">
-              Lihat Semua Artikel
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </Link>
+          <Button href="/articles" variant="outline" size="lg">
+            Lihat Semua Artikel
+            <ArrowRight className="ml-2 w-5 h-5" />
+          </Button>
         </div>
         </Reveal>
       </div>

@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import { Upload, Link2, Loader2, X, ImageIcon, FileText } from 'lucide-react';
 import SafeImage from '@/components/ui/SafeImage';
+import { fileToCompressedDataUrl } from '@/lib/local-image';
 
 interface MediaFieldProps {
   /** nama field FormData (disimpan sebagai URL) */
@@ -38,6 +39,7 @@ export default function MediaField({
   const [mode, setMode] = useState<'upload' | 'url'>('upload');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const [dragging, setDragging] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -46,10 +48,22 @@ export default function MediaField({
     if (!file) return;
     setBusy(true);
     setError('');
+    setNotice('');
     try {
       const url = await uploadFile(file);
       setValue(url);
     } catch (e) {
+      // Cadangan: simpan gambar langsung sebagai data URL (tanpa storage cloud).
+      if (file.type.startsWith('image/')) {
+        try {
+          const dataUrl = await fileToCompressedDataUrl(file);
+          setValue(dataUrl);
+          setNotice('Tersimpan langsung ke database (penyimpanan cloud belum aktif).');
+          return;
+        } catch {
+          /* lanjut ke pesan error di bawah */
+        }
+      }
       setError(e instanceof Error ? e.message : 'Gagal mengunggah.');
     } finally {
       setBusy(false);
@@ -160,6 +174,7 @@ export default function MediaField({
       <input ref={fileRef} type="file" accept={accept} className="hidden" onChange={(e) => handleFiles(e.target.files)} />
       <input type="hidden" name={name} value={value} />
 
+      {notice && <p className="mt-1 text-xs font-medium text-amber-600">{notice}</p>}
       {error && <p className="mt-1 text-xs font-medium text-red-600">{error}</p>}
     </div>
   );

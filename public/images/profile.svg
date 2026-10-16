@@ -1,14 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#3b82f6"/>
-      <stop offset="1" stop-color="#2a5eb1"/>
-    </linearGradient>
-  </defs>
-  <rect width="500" height="500" fill="url(#g)"/>
-  <circle cx="425" cy="60" r="140" fill="#ffffff" opacity="0.08"/>
-  <circle cx="40" cy="475" r="100" fill="#ffffff" opacity="0.06"/>
-  <rect x="0" y="494" width="500" height="6" fill="#ffffff" opacity="0.35"/>
-  <text x="250" y="244" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="bold" fill="#ffffff">N</text>
-  <text x="250" y="273.25" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#ffffff" opacity="0.75">Najib</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500" role="img" aria-label="Foto profil belum diatur">
+  <rect width="500" height="500" fill="#faf7f2"/>
+  <circle cx="250" cy="250" r="232" fill="#f1ede6"/>
+  <circle cx="250" cy="205" r="78" fill="#d6d3d1"/>
+  <path d="M250 300c-78 0-136 52-136 118v82h272v-82c0-66-58-118-136-118z" fill="#d6d3d1"/>
+  <circle cx="250" cy="250" r="224" fill="none" stroke="#ea580c" stroke-opacity="0.5" stroke-width="5" stroke-dasharray="2 16" stroke-linecap="round"/>
 </svg>

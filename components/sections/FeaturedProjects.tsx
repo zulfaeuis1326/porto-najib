@@ -62,12 +62,10 @@ export default async function FeaturedProjects() {
         {/* View All Button */}
         <Reveal>
         <div className="text-center">
-          <Link href="/projects">
-            <Button variant="outline" size="lg">
-              Lihat Semua Proyek
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </Link>
+          <Button href="/projects" variant="outline" size="lg">
+            Lihat Semua Proyek
+            <ArrowRight className="ml-2 w-5 h-5" />
+          </Button>
         </div>
         </Reveal>
       </div>

@@ -43,7 +43,6 @@ function coverSVG({ w, h, bg, label, sub }) {
 
 const covers = [
   // [file, w, h, bg, label, sub]
-  ['profile.svg', 500, 500, '#3b82f6', 'N', 'Najib'],
   ['project-ecommerce.svg', 800, 600, '#3b82f6', 'E-Commerce Dashboard', 'portfolio project'],
   ['project-ecommerce-2.svg', 800, 600, '#3b82f6', 'Dashboard View', 'portfolio project'],
   ['project-ecommerce-3.svg', 800, 600, '#3b82f6', 'Products Page', 'portfolio project'],
@@ -64,6 +63,18 @@ for (const [file, w, h, bg, label, sub] of covers) {
   writeFileSync(join(root, 'public', 'images', file), coverSVG({ w, h, bg, label, sub }));
   console.log('wrote public/images/' + file);
 }
+
+// Avatar netral (bukan foto sungguhan) — tampil sampai admin mengunggah foto sendiri.
+const avatarSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500" role="img" aria-label="Foto profil belum diatur">
+  <rect width="500" height="500" fill="#faf7f2"/>
+  <circle cx="250" cy="250" r="232" fill="#f1ede6"/>
+  <circle cx="250" cy="205" r="78" fill="#d6d3d1"/>
+  <path d="M250 300c-78 0-136 52-136 118v82h272v-82c0-66-58-118-136-118z" fill="#d6d3d1"/>
+  <circle cx="250" cy="250" r="224" fill="none" stroke="#ea580c" stroke-opacity="0.5" stroke-width="5" stroke-dasharray="2 16" stroke-linecap="round"/>
+</svg>
+`;
+writeFileSync(join(root, 'public', 'images', 'profile.svg'), avatarSVG);
+console.log('wrote public/images/profile.svg (avatar)');
 
 // ---- CV PDF minimal (1 halaman, Helvetica) ----
 function buildPdf(lines) {

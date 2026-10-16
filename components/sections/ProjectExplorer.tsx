@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { ExternalLink, Github, Search } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
@@ -108,36 +107,41 @@ export default function ProjectExplorer({ projects }: { projects: Project[] }) {
                 </div>
 
                 <div className="flex gap-3">
-                  <Link href={`/projects/${project.slug}`} className="flex-1">
-                    <Button variant="primary" size="sm" className="w-full">
-                      Detail
-                    </Button>
-                  </Link>
+                  <Button
+                    href={`/projects/${project.slug}`}
+                    variant="primary"
+                    size="sm"
+                    className="flex-1"
+                  >
+                    Detail
+                  </Button>
 
                   {project.demoUrl && (
-                    <a
+                    <Button
                       href={project.demoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-shrink-0"
+                      variant="outline"
+                      size="sm"
+                      className="shrink-0"
+                      aria-label={`Demo ${project.title}`}
                     >
-                      <Button variant="outline" size="sm">
-                        <ExternalLink className="w-4 h-4" />
-                      </Button>
-                    </a>
+                      <ExternalLink className="w-4 h-4" />
+                    </Button>
                   )}
 
                   {project.repoUrl && (
-                    <a
+                    <Button
                       href={project.repoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-shrink-0"
+                      variant="outline"
+                      size="sm"
+                      className="shrink-0"
+                      aria-label={`Kode sumber ${project.title}`}
                     >
-                      <Button variant="outline" size="sm">
-                        <Github className="w-4 h-4" />
-                      </Button>
-                    </a>
+                      <Github className="w-4 h-4" />
+                    </Button>
                   )}
                 </div>
               </div>

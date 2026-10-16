@@ -75,20 +75,16 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
         {/* Links */}
         <div className="flex flex-wrap gap-4 mb-8">
           {project.demoUrl && (
-            <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
-              <Button>
-                <ExternalLink className="w-4 h-4 mr-2" />
-                Live Demo
-              </Button>
-            </a>
+            <Button href={project.demoUrl} target="_blank" rel="noopener noreferrer">
+              <ExternalLink className="w-4 h-4 mr-2" />
+              Live Demo
+            </Button>
           )}
           {project.repoUrl && (
-            <a href={project.repoUrl} target="_blank" rel="noopener noreferrer">
-              <Button variant="outline">
-                <Github className="w-4 h-4 mr-2" />
-                Source Code
-              </Button>
-            </a>
+            <Button href={project.repoUrl} target="_blank" rel="noopener noreferrer" variant="outline">
+              <Github className="w-4 h-4 mr-2" />
+              Source Code
+            </Button>
           )}
         </div>
 

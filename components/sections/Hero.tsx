@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import Button from '../ui/Button';
 import Reveal from '../ui/Reveal';
@@ -36,17 +35,13 @@ export default async function Hero() {
             </p>
 
             <div className="flex flex-wrap gap-4">
-              <Link href="/projects">
-                <Button size="lg">
-                  Lihat Proyek
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
-              <Link href="/contact">
-                <Button variant="outline" size="lg">
-                  Hubungi Saya
-                </Button>
-              </Link>
+              <Button href="/projects" size="lg">
+                Lihat Proyek
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+              <Button href="/contact" variant="outline" size="lg">
+                Hubungi Saya
+              </Button>
             </div>
 
             {/* Stats */}

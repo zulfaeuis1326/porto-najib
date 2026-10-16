@@ -1,7 +1,6 @@
 import Hero from '@/components/sections/Hero';
 import FeaturedProjects from '@/components/sections/FeaturedProjects';
 import LatestArticles from '@/components/sections/LatestArticles';
-import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import { ArrowRight } from 'lucide-react';
 
@@ -34,12 +33,15 @@ export default function HomePage() {
                 Punya proyek menarik atau butuh bantuan dalam web development?
                 Saya siap membantu mewujudkan ide Anda menjadi kenyataan.
               </p>
-              <Link href="/contact">
-                <Button size="lg" variant="secondary" className="!bg-orange-600 !text-white hover:!bg-orange-500 !border-0">
-                  Hubungi Saya Sekarang
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
+              <Button
+                href="/contact"
+                size="lg"
+                variant="secondary"
+                className="!bg-orange-600 !text-white hover:!bg-orange-500 !border-0"
+              >
+                Hubungi Saya Sekarang
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
             </div>
           </div>
         </div>

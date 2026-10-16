@@ -1,5 +1,4 @@
 ﻿import { Metadata } from 'next';
-import Link from 'next/link';
 import { Download, MapPin, Mail, Briefcase, GraduationCap } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
@@ -68,12 +67,10 @@ export default async function AboutPage() {
                 {profileData.bio}
               </p>
 
-              <a href={profileData.cvUrl} download>
-                <Button>
-                  <Download className="w-4 h-4 mr-2" />
-                  Download CV
-                </Button>
-              </a>
+              <Button href={profileData.cvUrl} download>
+                <Download className="w-4 h-4 mr-2" />
+                Download CV
+              </Button>
             </div>
           </div>
         </Card>
@@ -150,9 +147,7 @@ export default async function AboutPage() {
           <p className="text-lg text-slate-600 dark:text-slate-400 mb-6">
             Tertarik untuk bekerja sama atau ingin tahu lebih lanjut?
           </p>
-          <Link href="/contact">
-            <Button size="lg">Hubungi Saya</Button>
-          </Link>
+          <Button href="/contact" size="lg">Hubungi Saya</Button>
         </div>
         </Reveal>
       </div>
