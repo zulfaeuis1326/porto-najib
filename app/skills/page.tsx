@@ -1,6 +1,7 @@
 ﻿import { Metadata } from 'next';
 import Badge from '@/components/ui/Badge';
 import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
 import Reveal from '@/components/ui/Reveal';
 import { getSkillsByCategory } from '@/lib/content';
 
@@ -124,16 +125,12 @@ export default async function SkillsPage() {
             Ingin tahu lebih detail tentang pengalaman saya dengan teknologi ini?
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <a href="/about">
-              <button className="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
-                Lihat Pengalaman
-              </button>
-            </a>
-            <a href="/projects">
-              <button className="px-6 py-3 border-2 border-orange-600 text-orange-600 rounded-lg hover:bg-orange-50 dark:hover:bg-orange-950 transition-colors">
-                Lihat Proyek
-              </button>
-            </a>
+            <Button href="/about" size="lg">
+              Lihat Pengalaman
+            </Button>
+            <Button href="/projects" variant="outline" size="lg">
+              Lihat Proyek
+            </Button>
           </div>
         </div>
         </Reveal>
