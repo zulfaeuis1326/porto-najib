@@ -19,14 +19,14 @@ function StatCard({ label, value, href, accent }: StatCardProps) {
   return (
     <Link
       href={href}
-      className="group rounded-2xl border border-slate-200 bg-white p-6 transition-all hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800"
+      className="group flex h-full min-h-[148px] flex-col rounded-2xl border border-slate-200 bg-white p-6 transition-all hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800"
     >
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{label}</p>
-        <span className={`h-2.5 w-2.5 rounded-full ${accent}`} />
+        <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${accent}`} />
       </div>
-      <p className="mt-2 text-4xl font-bold tracking-tight">{value}</p>
-      <p className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-orange-600 dark:text-orange-400">
+      <p className="mt-2 text-4xl font-bold tabular-nums tracking-tight">{value}</p>
+      <p className="mt-auto inline-flex items-center gap-1 pt-3 text-sm font-medium text-orange-600 dark:text-orange-400">
         Kelola <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
       </p>
     </Link>
@@ -71,7 +71,7 @@ export default async function AdminDashboard() {
         <p className="mt-1 text-slate-600 dark:text-slate-400">Ringkasan konten portfolio kamu.</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
         <StatCard label="Proyek" value={projects.count ?? 0} href="/admin/projects" accent="bg-orange-500" />
         <StatCard label="Artikel" value={articles.count ?? 0} href="/admin/articles" accent="bg-teal-500" />
         <StatCard label="Pesan Belum Dibaca" value={unread.count ?? 0} href="/admin/inbox" accent="bg-amber-500" />
@@ -95,12 +95,12 @@ export default async function AdminDashboard() {
         ) : (
           <ul className="divide-y divide-slate-100 dark:divide-slate-700">
             {recent.map((m) => (
-              <li key={m.id} className="flex items-start justify-between gap-4 py-3">
+              <li key={m.id} className="flex min-h-[64px] items-center justify-between gap-4 py-3">
                 <div className="min-w-0">
                   <p className="truncate text-sm font-semibold">{m.name} <span className="font-normal text-slate-500">· {m.email}</span></p>
                   <p className="truncate text-sm text-slate-600 dark:text-slate-400">{m.message}</p>
                 </div>
-                <span className="shrink-0 text-xs text-slate-400">
+                <span className="shrink-0 text-xs tabular-nums text-slate-400">
                   {new Date(m.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                 </span>
               </li>
@@ -120,9 +120,9 @@ export default async function AdminDashboard() {
             <Link
               key={a.href}
               href={a.href}
-              className="group rounded-2xl border border-dashed border-slate-300 p-6 text-center transition-all hover:border-orange-400 hover:bg-orange-50 dark:border-slate-600 dark:hover:border-orange-700 dark:hover:bg-orange-950"
+              className="group flex h-full min-h-[132px] flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 p-6 text-center transition-all hover:border-orange-400 hover:bg-orange-50 dark:border-slate-600 dark:hover:border-orange-700 dark:hover:bg-orange-950"
             >
-              <Icon className="mx-auto h-6 w-6 text-orange-600 dark:text-orange-400" />
+              <Icon className="h-6 w-6 text-orange-600 dark:text-orange-400" />
               <p className="mt-2 font-semibold">{a.title}</p>
               <p className="text-sm text-slate-500 dark:text-slate-400">{a.desc}</p>
             </Link>

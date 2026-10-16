@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { Github, Linkedin, Twitter, Instagram, Mail } from 'lucide-react';
 import { getProfile } from '@/lib/content';
-import { getSession } from '@/lib/session';
 import { profileData } from '@/data/profile';
 import type { Profile } from '@/types';
 
@@ -12,13 +11,6 @@ export default async function Footer() {
     profile = await getProfile();
   } catch {
     // fallback data lokal
-  }
-  let loggedIn = false;
-  try {
-    const session = await getSession();
-    loggedIn = Boolean(session.admin);
-  } catch {
-    loggedIn = false;
   }
 
   const socialLinks = [
@@ -102,15 +94,9 @@ export default async function Footer() {
         <div className="mt-8 pt-8 border-t border-stone-800 text-center text-sm text-stone-500">
           <p>
             © {currentYear} {profile.name}. All rights reserved. ·{' '}
-            {loggedIn ? (
-              <Link href="/admin" className="font-medium text-orange-400 hover:text-orange-300 transition-colors">
-                Dashboard
-              </Link>
-            ) : (
-              <Link href="/login" className="text-stone-600 hover:text-orange-400 transition-colors">
-                Admin
-              </Link>
-            )}
+            <Link href="/login" className="text-stone-600 hover:text-orange-400 transition-colors">
+              Admin
+            </Link>
           </p>
         </div>
       </div>

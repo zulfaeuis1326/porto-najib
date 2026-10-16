@@ -1,7 +1,8 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import Reveal from '@/components/ui/Reveal';
 import LoginForm from '@/components/LoginForm';
-import { isAuthConfigured } from '@/lib/session';
+import { isAuthConfigured, getSession } from '@/lib/session';
 
 export const metadata = {
   title: 'Login Admin - Najib',
@@ -9,7 +10,15 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function LoginPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function LoginPage() {
+  try {
+    const session = await getSession();
+    if (session.admin) redirect('/admin');
+  } catch {
+    // abaikan -> tampilkan form
+  }
   const configured = isAuthConfigured();
 
   return (
