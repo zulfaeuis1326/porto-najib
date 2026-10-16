@@ -64,26 +64,31 @@ export default async function Hero() {
 
           {/* Image */}
           <Reveal delay={150}>
-          <div className="relative">
-            <div className="relative w-full aspect-square max-w-md mx-auto">
-              {/* Decorative elements */}
-              <div className="absolute -top-6 -left-6 w-72 h-72 bg-orange-200 dark:bg-orange-900 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-60 animate-blob"></div>
-              <div className="absolute -bottom-8 -right-4 w-72 h-72 bg-amber-200 dark:bg-amber-900 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-60 animate-blob animation-delay-2000"></div>
-              <div className="absolute -bottom-4 -left-8 w-40 h-40 rounded-2xl bg-orange-600 dark:bg-orange-500 -z-0"></div>
-              
-              {/* Profile Image */}
-              <div className="relative rounded-2xl overflow-hidden border-4 border-white dark:border-stone-800 shadow-2xl img-zoom">
+            <div className="relative mx-auto w-full max-w-md">
+              {/* Dekorasi memakai ukuran wadah (bukan ukuran tetap seperti
+                  sebelumnya), jadi selalu proporsional: tidak "lari-lari",
+                  tidak keluar layar di HP, dan sama hasilnya di mode terang/gelap. */}
+              <div
+                aria-hidden="true"
+                className="absolute -inset-3 rounded-[2.75rem] bg-orange-200/50 blur-2xl dark:bg-orange-900/25"
+              />
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 translate-x-2.5 translate-y-2.5 rotate-3 rounded-[2rem] border-2 border-orange-300/70 dark:border-orange-900/60"
+              />
+
+              {/* Foto profil: selalu kotak sempurna, apa pun rasio fotonya. */}
+              <div className="relative aspect-square overflow-hidden rounded-[2rem] border-4 border-white shadow-xl dark:border-stone-800">
                 <SafeImage
                   src={profileData.photoUrl}
                   alt={profileData.name}
-                  width={500}
-                  height={500}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 1024px) 90vw, 420px"
+                  className="object-cover"
                   priority
                 />
               </div>
             </div>
-          </div>
           </Reveal>
         </div>
       </div>
