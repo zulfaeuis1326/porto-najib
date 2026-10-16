@@ -14,6 +14,8 @@ interface SafeImageProps {
   height?: number;
   sizes?: string;
   priority?: boolean;
+  /** dipanggil saat gambar gagal dimuat (mis. untuk pratinjau di CMS) */
+  onFail?: () => void;
 }
 
 // Hanya sumber yang benar-benar bisa dirender yang dilewatkan.
@@ -57,27 +59,44 @@ export default function SafeImage({
   height,
   sizes,
   priority,
+  onFail,
 }: SafeImageProps) {
   const [failed, setFailed] = useState(false);
   const s = src ? String(src).trim() : '';
+
+  function fail() {
+    setFailed(true);
+    onFail?.();
+  }
 
   if (!isRenderableImageSrc(s) || failed) {
     return <Placeholder fill={fill} className={className} />;
   }
 
+  const isLocal = s.startsWith('/');
   const isInline = s.startsWith('data:') || /\.svg(\?|#|$)/i.test(s);
 
-  if (isInline) {
-    // SVG & data URL: biarkan browser memuat langsung (tanpa optimizer).
+  // Aset lokal (/public) -> next/image, agar tetap dioptimalkan.
+  // URL dari internet, data URL, dan SVG -> <img> biasa: browser memuat
+  // langsung dari sumbernya, sehingga gambar tetap tampil walaupun situs
+  // sumber memblokir optimizer gambar Next.js (penyebab "gambar tidak muncul").
+  if (!isLocal || isInline) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
+        // Bila gambar sudah gagal SEBELUM React aktif (HTML dari server),
+        // event error tidak akan pernah sampai ke React. Deteksi saat mount.
+        ref={(el) => {
+          if (el && el.complete && el.naturalWidth === 0) fail();
+        }}
         src={s}
         alt={alt}
-        className={className}
+        width={fill ? undefined : width}
+        height={fill ? undefined : height}
+        className={`${fill ? 'absolute inset-0 h-full w-full' : ''} ${className}`.trim()}
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
-        onError={() => setFailed(true)}
+        onError={fail}
       />
     );
   }
@@ -92,7 +111,7 @@ export default function SafeImage({
       sizes={sizes}
       priority={priority}
       className={className}
-      onError={() => setFailed(true)}
+      onError={fail}
     />
   );
 }

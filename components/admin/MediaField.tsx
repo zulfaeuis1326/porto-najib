@@ -40,8 +40,14 @@ export default function MediaField({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  const [previewFailed, setPreviewFailed] = useState(false);
   const [dragging, setDragging] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  function setPreview(v: string) {
+    setValue(v);
+    setPreviewFailed(false);
+  }
 
   async function handleFiles(files: FileList | null) {
     const file = files?.[0];
@@ -51,13 +57,13 @@ export default function MediaField({
     setNotice('');
     try {
       const url = await uploadFile(file);
-      setValue(url);
+      setPreview(url);
     } catch (e) {
       // Cadangan: simpan gambar langsung sebagai data URL (tanpa storage cloud).
       if (file.type.startsWith('image/')) {
         try {
           const dataUrl = await fileToCompressedDataUrl(file);
-          setValue(dataUrl);
+          setPreview(dataUrl);
           setNotice('Tersimpan langsung ke database (penyimpanan cloud belum aktif).');
           return;
         } catch {
@@ -80,7 +86,13 @@ export default function MediaField({
         <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl border border-stone-200 bg-stone-50">
           {value ? (
             kind === 'image' ? (
-              <SafeImage src={value} alt="Pratinjau" fill className="object-cover" />
+              <SafeImage
+                src={value}
+                alt="Pratinjau"
+                fill
+                className="object-cover"
+                onFail={() => setPreviewFailed(true)}
+              />
             ) : (
               <div className="grid h-full w-full place-items-center text-stone-500">
                 <FileText className="h-7 w-7" />
@@ -152,8 +164,8 @@ export default function MediaField({
               <input
                 type="url"
                 value={value}
-                onChange={(e) => setValue(e.target.value)}
-                placeholder="https://… atau /images/berkas.svg"
+                onChange={(e) => setPreview(e.target.value)}
+                placeholder="https://situs.com/gambar.jpg"
                 className="w-full bg-transparent text-sm outline-none placeholder:text-stone-400"
               />
             </div>
@@ -162,7 +174,7 @@ export default function MediaField({
           {value && (
             <button
               type="button"
-              onClick={() => setValue('')}
+              onClick={() => setPreview('')}
               className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-red-600 hover:underline"
             >
               <X className="h-3 w-3" /> Hapus berkas
@@ -175,6 +187,12 @@ export default function MediaField({
       <input type="hidden" name={name} value={value} />
 
       {notice && <p className="mt-1 text-xs font-medium text-amber-600">{notice}</p>}
+      {previewFailed && (
+        <p className="mt-1 text-xs font-medium text-red-600">
+          Gambar tidak bisa dimuat. Pastikan tautannya menunjuk <strong>langsung ke berkas gambar</strong>{' '}
+          (berakhiran .jpg / .jpeg / .png / .webp / .gif), bukan alamat halaman web.
+        </p>
+      )}
       {error && <p className="mt-1 text-xs font-medium text-red-600">{error}</p>}
     </div>
   );

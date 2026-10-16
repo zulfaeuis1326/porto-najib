@@ -15,6 +15,19 @@ function toList(formData: FormData, name: string): string[] {
   return Array.from(new Set(raw));
 }
 
+// Tautan "halaman" Google Drive tidak pernah tampil sebagai gambar.
+// Ubah otomatis ke tautan gambar langsungnya.
+function normalizeImageUrl(s: string): string {
+  const drive = s.match(
+    /drive\.google\.com\/(?:file\/d\/([^/?#]+)|(?:open|uc)\?(?:[^#]*&)?id=([^&#]+))/i
+  );
+  if (drive) {
+    const id = drive[1] || drive[2];
+    if (id) return `https://lh3.googleusercontent.com/d/${id}`;
+  }
+  return s;
+}
+
 // Bersihkan URL: buang spasi, tanda kutip, dan path lokal Windows yang
 // tidak bisa dirender di browser (sumber error "path url" di CMS).
 function cleanUrl(v: FormDataEntryValue | null): string {
@@ -24,11 +37,16 @@ function cleanUrl(v: FormDataEntryValue | null): string {
     s = s.slice(1, -1).trim();
   }
   if (/^[a-zA-Z]:\\/.test(s) || s.includes('\\')) return '';
-  return s;
+  return normalizeImageUrl(s);
 }
 
+// Galeri dikirim sebagai banyak nilai (satu URL per input), jadi JANGAN
+// dipecah dengan koma — banyak URL gambar mengandung koma.
 function cleanImageList(formData: FormData, name: string): string[] {
-  return toList(formData, name).map((u) => cleanUrl(u)).filter(Boolean);
+  return formData
+    .getAll(name)
+    .map((v) => cleanUrl(v))
+    .filter(Boolean);
 }
 
 function slugify(s: string) {
