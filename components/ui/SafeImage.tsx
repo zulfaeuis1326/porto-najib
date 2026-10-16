@@ -31,7 +31,7 @@ export function isRenderableImageSrc(src?: string | null): boolean {
 
 function Placeholder({ fill, className }: { fill?: boolean; className?: string }) {
   const base =
-    'grid place-items-center bg-stone-100 text-stone-300 dark:bg-slate-800 dark:text-slate-600';
+    'grid place-items-center bg-stone-100 text-stone-300 dark:bg-stone-800 dark:text-stone-600';
   return (
     <div
       className={

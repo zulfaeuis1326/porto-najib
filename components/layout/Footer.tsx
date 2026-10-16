@@ -21,8 +21,8 @@ export default async function Footer() {
   ];
 
   return (
-    <footer className="bg-stone-900 dark:bg-black text-stone-300 mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer className="mt-20 border-t border-stone-800 bg-stone-950 text-stone-300 dark:bg-black">
+      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* About */}
           <div>
@@ -79,7 +79,7 @@ export default async function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2.5 rounded-lg bg-stone-800 hover:bg-orange-600 hover:text-white text-stone-300 transition-all duration-300 hover:-translate-y-0.5"
+                    className="rounded-xl bg-stone-800 p-2.5 text-stone-300 transition-all duration-300 hover:-translate-y-0.5 hover:bg-orange-600 hover:text-white"
                     aria-label={social.label}
                   >
                     <Icon className="w-5 h-5" />

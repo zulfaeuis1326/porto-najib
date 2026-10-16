@@ -41,15 +41,15 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
           <div className="mb-8">
             <div className="flex flex-wrap items-center gap-3 mb-4">
               <Badge variant="info">{article.category || 'Artikel'}</Badge>
-              <span className="inline-flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+              <span className="inline-flex items-center gap-1 text-xs text-stone-500 dark:text-stone-400">
                 <Calendar className="w-3 h-3" /> {formatDate(article.publishedAt)}
               </span>
-              <span className="inline-flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+              <span className="inline-flex items-center gap-1 text-xs text-stone-500 dark:text-stone-400">
                 <Clock className="w-3 h-3" /> {article.readTime} min baca
               </span>
             </div>
             <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">{article.title}</h1>
-            <p className="text-xl text-slate-600 dark:text-slate-400 leading-relaxed">{article.excerpt}</p>
+            <p className="text-xl text-stone-600 dark:text-stone-400 leading-relaxed">{article.excerpt}</p>
           </div>
         </Reveal>
 
@@ -88,7 +88,7 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
                     </div>
                     <div className="p-4">
                       <h3 className="font-semibold mb-2 line-clamp-1">{o.title}</h3>
-                      <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">{o.excerpt}</p>
+                      <p className="text-sm text-stone-600 dark:text-stone-400 line-clamp-2">{o.excerpt}</p>
                     </div>
                   </Card>
                 </Link>

@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import SiteChrome from "@/components/layout/SiteChrome";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["500", "600", "700", "800"],
+});
 
 export const metadata: Metadata = {
   title: "Najib - Full Stack Developer & Technical Writer",
@@ -24,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" suppressHydrationWarning>
-      <body className={`${inter.className} bg-[#FAF7F2] text-stone-900 dark:bg-stone-950 dark:text-stone-100 antialiased`}>
+      <body className={`${inter.className} ${jakarta.variable} bg-[#FAF7F2] text-stone-900 dark:bg-stone-950 dark:text-stone-100 antialiased`}>
         <SiteChrome>{children}</SiteChrome>
       </body>
     </html>

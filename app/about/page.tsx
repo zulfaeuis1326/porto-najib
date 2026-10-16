@@ -26,7 +26,7 @@ export default async function AboutPage() {
         <div className="text-center mb-16">
           <span className="eyebrow justify-center mb-3">Profil</span>
           <h1 className="text-4xl sm:text-5xl font-bold mb-4 tracking-tight">Tentang Saya</h1>
-          <p className="text-xl text-slate-600 dark:text-slate-400">
+          <p className="text-xl text-stone-600 dark:text-stone-400">
             Kenali lebih dekat tentang perjalanan dan pengalaman saya
           </p>
         </div>
@@ -51,11 +51,11 @@ export default async function AboutPage() {
               </p>
               
               <div className="space-y-2 mb-6">
-                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                <div className="flex items-center gap-2 text-stone-600 dark:text-stone-400">
                   <MapPin className="w-4 h-4" />
                   <span>{profileData.location}</span>
                 </div>
-                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                <div className="flex items-center gap-2 text-stone-600 dark:text-stone-400">
                   <Mail className="w-4 h-4" />
                   <a href={`mailto:${profileData.email}`} className="hover:text-orange-600 dark:hover:text-orange-400">
                     {profileData.email}
@@ -63,7 +63,7 @@ export default async function AboutPage() {
                 </div>
               </div>
 
-              <p className="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
+              <p className="text-stone-600 dark:text-stone-400 mb-6 leading-relaxed">
                 {profileData.bio}
               </p>
 
@@ -99,13 +99,13 @@ export default async function AboutPage() {
                   )}
                 </div>
                 
-                <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">
+                <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">
                   {formatDate(exp.startDate)} - {exp.endDate ? formatDate(exp.endDate) : 'Sekarang'}
                   {' • '}
                   {calculateDuration(exp.startDate, exp.endDate)}
                 </p>
                 
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                <p className="text-stone-600 dark:text-stone-400 leading-relaxed">
                   {exp.description}
                 </p>
               </Card>
@@ -128,11 +128,11 @@ export default async function AboutPage() {
                 <h3 className="text-xl font-semibold mb-1">{exp.title}</h3>
                 <p className="text-orange-600 dark:text-orange-400 mb-2">{exp.organization}</p>
                 
-                <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">
+                <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">
                   {formatDate(exp.startDate)} - {exp.endDate ? formatDate(exp.endDate) : 'Sekarang'}
                 </p>
                 
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                <p className="text-stone-600 dark:text-stone-400 leading-relaxed">
                   {exp.description}
                 </p>
               </Card>
@@ -144,7 +144,7 @@ export default async function AboutPage() {
         {/* CTA */}
         <Reveal>
         <div className="mt-12 text-center">
-          <p className="text-lg text-slate-600 dark:text-slate-400 mb-6">
+          <p className="text-lg text-stone-600 dark:text-stone-400 mb-6">
             Tertarik untuk bekerja sama atau ingin tahu lebih lanjut?
           </p>
           <Button href="/contact" size="lg">Hubungi Saya</Button>

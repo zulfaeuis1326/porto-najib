@@ -40,7 +40,7 @@ export default function ContactForm() {
           name="name"
           required
           maxLength={100}
-          className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+          className="w-full px-4 py-2 border border-stone-300 dark:border-stone-600 rounded-lg bg-white dark:bg-stone-800 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
           placeholder="Nama Anda"
         />
       </div>
@@ -56,7 +56,7 @@ export default function ContactForm() {
           name="email"
           required
           maxLength={150}
-          className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+          className="w-full px-4 py-2 border border-stone-300 dark:border-stone-600 rounded-lg bg-white dark:bg-stone-800 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
           placeholder="email@example.com"
         />
       </div>
@@ -72,7 +72,7 @@ export default function ContactForm() {
           required
           maxLength={5000}
           rows={5}
-          className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all resize-none"
+          className="w-full px-4 py-2 border border-stone-300 dark:border-stone-600 rounded-lg bg-white dark:bg-stone-800 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all resize-none"
           placeholder="Tulis pesan Anda di sini..."
         />
       </div>

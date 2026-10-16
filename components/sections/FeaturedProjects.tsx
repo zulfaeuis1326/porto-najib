@@ -12,7 +12,7 @@ export default async function FeaturedProjects() {
   const featuredProjects = (await getFeaturedProjects()).slice(0, 3);
 
   return (
-    <section className="py-20 bg-slate-50 dark:bg-slate-800/50">
+    <section className="py-20 bg-stone-50 dark:bg-stone-800/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <Reveal>
@@ -41,7 +41,7 @@ export default async function FeaturedProjects() {
                   <h3 className="text-xl font-semibold mb-2 line-clamp-1">
                     {project.title}
                   </h3>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm mb-4 line-clamp-2">
+                  <p className="text-stone-600 dark:text-stone-400 text-sm mb-4 line-clamp-2">
                     {project.summary}
                   </p>
                   <div className="flex flex-wrap gap-2">

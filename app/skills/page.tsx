@@ -27,7 +27,7 @@ const levelLabels = {
 };
 
 const levelColors = {
-  beginner: 'bg-slate-200 dark:bg-slate-700',
+  beginner: 'bg-stone-200 dark:bg-stone-700',
   intermediate: 'bg-amber-200 dark:bg-amber-900',
   advanced: 'bg-teal-200 dark:bg-teal-900',
   expert: 'bg-orange-200 dark:bg-orange-900'
@@ -44,7 +44,7 @@ export default async function SkillsPage() {
         <div className="text-center mb-16">
           <span className="eyebrow justify-center mb-3">Keahlian</span>
           <h1 className="text-4xl sm:text-5xl font-bold mb-4 tracking-tight">Skills & Teknologi</h1>
-          <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+          <p className="text-xl text-stone-600 dark:text-stone-400 max-w-2xl mx-auto">
             Berbagai teknologi dan tools yang saya gunakan dalam pengembangan aplikasi web
           </p>
         </div>
@@ -74,7 +74,7 @@ export default async function SkillsPage() {
                       
                       <div className="mt-3">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm text-slate-600 dark:text-slate-400">
+                          <span className="text-sm text-stone-600 dark:text-stone-400">
                             Level
                           </span>
                           <Badge className={levelColors[skill.level]}>
@@ -83,13 +83,13 @@ export default async function SkillsPage() {
                         </div>
                         
                         {/* Progress Bar */}
-                        <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                        <div className="w-full bg-stone-200 dark:bg-stone-700 rounded-full h-2">
                           <div
                             className={`h-2 rounded-full transition-all ${
                               skill.level === 'expert' ? 'bg-orange-600 w-full' :
                               skill.level === 'advanced' ? 'bg-teal-600 w-3/4' :
                               skill.level === 'intermediate' ? 'bg-amber-500 w-1/2' :
-                              'bg-slate-400 w-1/4'
+                              'bg-stone-400 w-1/4'
                             }`}
                           />
                         </div>
@@ -121,7 +121,7 @@ export default async function SkillsPage() {
         {/* CTA */}
         <Reveal>
         <div className="mt-12 text-center">
-          <p className="text-lg text-slate-600 dark:text-slate-400 mb-6">
+          <p className="text-lg text-stone-600 dark:text-stone-400 mb-6">
             Ingin tahu lebih detail tentang pengalaman saya dengan teknologi ini?
           </p>
           <div className="flex flex-wrap gap-4 justify-center">

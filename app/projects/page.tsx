@@ -22,7 +22,7 @@ export default async function ProjectsPage() {
         <div className="text-center mb-12">
           <span className="eyebrow justify-center mb-3">Portofolio</span>
           <h1 className="text-4xl sm:text-5xl font-bold mb-4 tracking-tight">Proyek Saya</h1>
-          <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+          <p className="text-xl text-stone-600 dark:text-stone-400 max-w-2xl mx-auto">
             Berikut adalah beberapa proyek yang telah saya kerjakan,
             dari aplikasi web hingga dashboard management.
           </p>

@@ -55,14 +55,14 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl sm:text-5xl font-bold mb-4">{project.title}</h1>
-          <div className="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-400 mb-6">
+          <div className="flex items-center gap-4 text-sm text-stone-600 dark:text-stone-400 mb-6">
             <div className="flex items-center gap-1">
               <Calendar className="w-4 h-4" />
               <span>{formatDate(project.createdAt)}</span>
             </div>
           </div>
 
-          <p className="text-xl text-slate-600 dark:text-slate-400 leading-relaxed">
+          <p className="text-xl text-stone-600 dark:text-stone-400 leading-relaxed">
             {project.summary}
           </p>
         </div>
@@ -144,7 +144,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                     </div>
                     <div className="p-4">
                       <h3 className="font-semibold mb-2">{relatedProject.title}</h3>
-                      <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
+                      <p className="text-sm text-stone-600 dark:text-stone-400 line-clamp-2">
                         {relatedProject.summary}
                       </p>
                     </div>

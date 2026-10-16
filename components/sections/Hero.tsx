@@ -30,7 +30,7 @@ export default async function Hero() {
               </h2>
             </div>
             
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-xl">
+            <p className="text-lg text-stone-600 dark:text-stone-400 max-w-xl">
               {profileData.bio}
             </p>
 
@@ -72,7 +72,7 @@ export default async function Hero() {
               <div className="absolute -bottom-4 -left-8 w-40 h-40 rounded-2xl bg-orange-600 dark:bg-orange-500 -z-0"></div>
               
               {/* Profile Image */}
-              <div className="relative rounded-2xl overflow-hidden border-4 border-white dark:border-slate-800 shadow-2xl img-zoom">
+              <div className="relative rounded-2xl overflow-hidden border-4 border-white dark:border-stone-800 shadow-2xl img-zoom">
                 <SafeImage
                   src={profileData.photoUrl}
                   alt={profileData.name}

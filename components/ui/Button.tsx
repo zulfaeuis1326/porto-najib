@@ -5,16 +5,17 @@ type Variant = 'primary' | 'secondary' | 'outline' | 'ghost';
 type Size = 'sm' | 'md' | 'lg';
 
 const baseStyles =
-  'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
+  'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
 
 const variants: Record<Variant, string> = {
   primary:
-    'bg-orange-600 text-white hover:bg-orange-700 active:bg-orange-800 dark:bg-orange-500 dark:hover:bg-orange-400 dark:text-stone-950',
+    'bg-orange-600 text-white shadow-sm hover:bg-orange-700 hover:shadow active:bg-orange-800 dark:bg-orange-500 dark:hover:bg-orange-400 dark:text-stone-950',
   secondary:
-    'bg-slate-200 text-slate-900 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600',
+    'bg-stone-900 text-white hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white',
   outline:
-    'border-2 border-orange-600 text-orange-700 hover:bg-orange-50 dark:border-orange-500 dark:text-orange-400 dark:hover:bg-orange-950',
-  ghost: 'text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800',
+    'border border-stone-300 bg-white text-stone-800 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-700 dark:border-stone-700 dark:bg-transparent dark:text-stone-200 dark:hover:border-orange-800 dark:hover:bg-stone-900 dark:hover:text-orange-300',
+  ghost:
+    'text-stone-600 hover:bg-stone-100 hover:text-stone-900 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-white',
 };
 
 const sizes: Record<Size, string> = {

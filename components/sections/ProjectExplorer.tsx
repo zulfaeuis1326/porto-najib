@@ -35,13 +35,13 @@ export default function ProjectExplorer({ projects }: { projects: Project[] }) {
       <div className="mb-8 space-y-4">
         {/* Search */}
         <div className="relative max-w-md mx-auto">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
           <input
             type="text"
             placeholder="Cari proyek..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2 border border-stone-300 dark:border-stone-600 rounded-lg bg-white dark:bg-stone-800 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
           />
         </div>
 
@@ -69,7 +69,7 @@ export default function ProjectExplorer({ projects }: { projects: Project[] }) {
       </Reveal>
 
       {/* Projects Count */}
-      <p className="text-center text-slate-600 dark:text-slate-400 mb-8">
+      <p className="text-center text-stone-600 dark:text-stone-400 mb-8">
         Menampilkan {filteredProjects.length} proyek
       </p>
 
@@ -93,7 +93,7 @@ export default function ProjectExplorer({ projects }: { projects: Project[] }) {
                   {project.title}
                 </h3>
 
-                <p className="text-slate-600 dark:text-slate-400 text-sm mb-4 line-clamp-3">
+                <p className="text-stone-600 dark:text-stone-400 text-sm mb-4 line-clamp-3">
                   {project.summary}
                 </p>
 
@@ -151,7 +151,7 @@ export default function ProjectExplorer({ projects }: { projects: Project[] }) {
         </div>
       ) : (
         <div className="text-center py-12">
-          <p className="text-lg text-slate-600 dark:text-slate-400">
+          <p className="text-lg text-stone-600 dark:text-stone-400">
             Tidak ada proyek yang cocok dengan filter Anda
           </p>
         </div>

@@ -8,7 +8,7 @@
         <h2 className="text-3xl font-semibold mb-4">
           Halaman Tidak Ditemukan
         </h2>
-        <p className="text-slate-600 dark:text-slate-400 mb-8 max-w-md mx-auto">
+        <p className="text-stone-600 dark:text-stone-400 mb-8 max-w-md mx-auto">
           Maaf, halaman yang Anda cari tidak ada atau telah dipindahkan.
         </p>
         <a 

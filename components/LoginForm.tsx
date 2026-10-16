@@ -34,7 +34,7 @@ export default function LoginForm() {
           autoComplete="username"
           required
           placeholder="Username admin"
-          className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 transition-all focus:border-transparent focus:ring-2 focus:ring-orange-500 dark:border-slate-600 dark:bg-slate-800"
+          className="w-full rounded-lg border border-stone-300 bg-white px-4 py-2.5 transition-all focus:border-transparent focus:ring-2 focus:ring-orange-500 dark:border-stone-600 dark:bg-stone-800"
         />
       </div>
       <div>
@@ -48,7 +48,7 @@ export default function LoginForm() {
           autoComplete="current-password"
           required
           placeholder="Password admin"
-          className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 transition-all focus:border-transparent focus:ring-2 focus:ring-orange-500 dark:border-slate-600 dark:bg-slate-800"
+          className="w-full rounded-lg border border-stone-300 bg-white px-4 py-2.5 transition-all focus:border-transparent focus:ring-2 focus:ring-orange-500 dark:border-stone-600 dark:bg-stone-800"
         />
       </div>
 

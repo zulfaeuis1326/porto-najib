@@ -1,7 +1,8 @@
 // Token gaya bersama untuk seluruh dashboard admin.
 // Sengaja di satu tempat agar konsisten (tidak "masing-masing sendiri").
 
-export const card = 'rounded-2xl border border-stone-200 bg-white';
+export const card =
+  'rounded-2xl border border-stone-200 bg-white shadow-[0_1px_2px_rgba(28,25,23,0.05)]';
 
 export const input =
   'w-full rounded-xl border border-stone-300 bg-white px-3.5 py-2.5 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 disabled:opacity-60';

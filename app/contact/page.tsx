@@ -19,7 +19,7 @@ export default async function ContactPage() {
       icon: Github, 
       href: profileData.links.github, 
       label: 'GitHub',
-      color: 'hover:text-slate-900 dark:hover:text-white'
+      color: 'hover:text-stone-900 dark:hover:text-white'
     },
     { 
       icon: Linkedin, 
@@ -49,7 +49,7 @@ export default async function ContactPage() {
         <div className="text-center mb-16">
           <span className="eyebrow justify-center mb-3">Kontak</span>
           <h1 className="text-4xl sm:text-5xl font-bold mb-4 tracking-tight">Hubungi Saya</h1>
-          <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+          <p className="text-xl text-stone-600 dark:text-stone-400 max-w-2xl mx-auto">
             Punya pertanyaan atau ingin bekerja sama? 
             Saya akan dengan senang hati mendengarnya!
           </p>
@@ -70,7 +70,7 @@ export default async function ContactPage() {
                     <p className="font-medium mb-1">Email</p>
                     <a 
                       href={`mailto:${profileData.email}`}
-                      className="text-slate-600 dark:text-slate-400 hover:text-orange-600 dark:hover:text-orange-400 text-sm"
+                      className="text-stone-600 dark:text-stone-400 hover:text-orange-600 dark:hover:text-orange-400 text-sm"
                     >
                       {profileData.email}
                     </a>
@@ -81,7 +81,7 @@ export default async function ContactPage() {
                   <MapPin className="w-5 h-5 text-orange-600 dark:text-orange-400 mt-1 flex-shrink-0" />
                   <div>
                     <p className="font-medium mb-1">Lokasi</p>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm">
+                    <p className="text-stone-600 dark:text-stone-400 text-sm">
                       {profileData.location}
                     </p>
                   </div>
@@ -102,7 +102,7 @@ export default async function ContactPage() {
                       href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`flex items-center gap-3 text-slate-600 dark:text-slate-400 transition-colors ${social.color}`}
+                      className={`flex items-center gap-3 text-stone-600 dark:text-stone-400 transition-colors ${social.color}`}
                     >
                       <Icon className="w-5 h-5" />
                       <span>{social.label}</span>
@@ -116,11 +116,11 @@ export default async function ContactPage() {
             <Reveal delay={200}>
             <Card className="p-6 bg-orange-50 dark:bg-orange-950 border-orange-200 dark:border-orange-900">
               <h3 className="font-semibold mb-2">Jam Kerja</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+              <p className="text-sm text-stone-600 dark:text-stone-400">
                 Senin - Jumat<br />
                 09:00 - 17:00 WIB
               </p>
-              <p className="text-xs text-slate-500 dark:text-slate-500 mt-2">
+              <p className="text-xs text-stone-500 dark:text-stone-500 mt-2">
                 * Biasanya merespon dalam 24 jam
               </p>
             </Card>
@@ -132,7 +132,7 @@ export default async function ContactPage() {
             <Reveal delay={120}>
             <Card className="p-8">
               <h2 className="text-2xl font-semibold mb-2">Kirim Pesan</h2>
-              <p className="text-slate-600 dark:text-slate-400 mb-6">
+              <p className="text-stone-600 dark:text-stone-400 mb-6">
                 Isi form di bawah ini dan saya akan segera menghubungi Anda kembali.
               </p>
               <ContactForm />
@@ -148,28 +148,28 @@ export default async function ContactPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h3 className="font-semibold mb-2">Berapa lama response time?</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+              <p className="text-sm text-stone-600 dark:text-stone-400">
                 Biasanya saya merespon dalam 24 jam di hari kerja. Untuk urgent, 
                 bisa langsung email.
               </p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">Apakah tersedia untuk freelance?</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+              <p className="text-sm text-stone-600 dark:text-stone-400">
                 Ya! Saya terbuka untuk proyek freelance. Diskusikan kebutuhan Anda 
                 dan kita bisa atur timeline yang sesuai.
               </p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">Teknologi apa yang dikuasai?</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+              <p className="text-sm text-stone-600 dark:text-stone-400">
                 Fokus saya adalah Next.js, React, TypeScript, dan Supabase. 
                 Lihat halaman Skills untuk detail lengkap.
               </p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">Konsultasi gratis?</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+              <p className="text-sm text-stone-600 dark:text-stone-400">
                 Diskusi awal dan konsultasi singkat gratis. Untuk konsultasi 
                 mendalam bisa kita bicarakan lebih lanjut.
               </p>

@@ -41,7 +41,7 @@ export default async function LatestArticles() {
                 <div className="p-6">
                   <div className="flex items-center gap-2 mb-3">
                     <Badge variant="info">{article.category}</Badge>
-                    <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                    <div className="flex items-center gap-1 text-xs text-stone-500 dark:text-stone-400">
                       <Clock className="w-3 h-3" />
                       <span>{article.readTime} min</span>
                     </div>
@@ -51,11 +51,11 @@ export default async function LatestArticles() {
                     {article.title}
                   </h3>
                   
-                  <p className="text-slate-600 dark:text-slate-400 text-sm mb-4 line-clamp-2">
+                  <p className="text-stone-600 dark:text-stone-400 text-sm mb-4 line-clamp-2">
                     {article.excerpt}
                   </p>
                   
-                  <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                  <div className="flex items-center gap-1 text-xs text-stone-500 dark:text-stone-400">
                     <Calendar className="w-3 h-3" />
                     <span>{formatDate(article.publishedAt)}</span>
                   </div>

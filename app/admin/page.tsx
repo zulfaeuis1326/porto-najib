@@ -27,7 +27,7 @@ function StatCard({ icon: Icon, label, value, caption, href }: StatCardProps) {
   return (
     <Link
       href={href}
-      className="group flex flex-col rounded-2xl border border-stone-200 bg-white p-5 transition hover:border-orange-300 hover:shadow-sm"
+      className="group flex flex-col rounded-2xl border border-stone-200 bg-white p-5 shadow-[0_1px_2px_rgba(28,25,23,0.05)] transition hover:-translate-y-0.5 hover:border-orange-300 hover:shadow-md"
     >
       <div className="flex items-center justify-between">
         <span className="grid h-10 w-10 place-items-center rounded-xl bg-orange-50 text-orange-600">
@@ -135,7 +135,7 @@ export default async function AdminDashboard() {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Pesan terbaru */}
-        <section className="lg:col-span-2 rounded-2xl border border-stone-200 bg-white">
+        <section className="lg:col-span-2 rounded-2xl border border-stone-200 bg-white shadow-[0_1px_2px_rgba(28,25,23,0.05)]">
           <div className="flex items-center justify-between border-b border-stone-100 px-5 py-4">
             <h2 className="flex items-center gap-2 text-sm font-bold text-stone-800">
               <Inbox className="h-4 w-4 text-orange-600" />
@@ -172,7 +172,7 @@ export default async function AdminDashboard() {
 
         {/* Status & aksi cepat */}
         <div className="space-y-6">
-          <section className="rounded-2xl border border-stone-200 bg-white p-5">
+          <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-[0_1px_2px_rgba(28,25,23,0.05)]">
             <h2 className="text-sm font-bold text-stone-800">Status Situs</h2>
             <ul className="mt-4 space-y-3 text-sm">
               <li className="flex items-center justify-between">
@@ -203,7 +203,7 @@ export default async function AdminDashboard() {
             </Link>
           </section>
 
-          <section className="rounded-2xl border border-stone-200 bg-white p-5">
+          <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-[0_1px_2px_rgba(28,25,23,0.05)]">
             <h2 className="text-sm font-bold text-stone-800">Aksi Cepat</h2>
             <div className="mt-3 space-y-2">
               {[
