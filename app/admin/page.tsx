@@ -86,10 +86,12 @@ function Panel({
 
 function DiagPanel({
   items,
+  probes,
   hint,
   error,
 }: {
   items: { label: string; value: string; ok: boolean }[];
+  probes: { table: string; ok: boolean; code: string; message: string }[];
   hint?: string;
   error?: string;
 }) {
@@ -108,6 +110,21 @@ function DiagPanel({
           </li>
         ))}
       </ul>
+
+      <p className="mt-4 text-xs font-bold uppercase tracking-[0.14em] text-amber-800">
+        Uji akses tabel
+      </p>
+      <ul className="mt-2 space-y-1.5">
+        {probes.map((p) => (
+          <li key={p.table} className="flex items-start justify-between gap-4 text-sm">
+            <span className="font-mono text-xs text-amber-900">{p.table}</span>
+            <span className={`text-right text-xs ${p.ok ? 'font-semibold text-emerald-700' : 'text-red-700'}`}>
+              {p.ok ? 'OK' : `${p.code} ${p.message}`}
+            </span>
+          </li>
+        ))}
+      </ul>
+
       {hint && <p className="mt-3 text-xs leading-relaxed text-amber-900">{hint}</p>}
       {error && (
         <p className="mt-3 overflow-x-auto rounded-lg bg-white/80 p-3 font-mono text-xs text-red-700">
@@ -156,7 +173,26 @@ export default async function AdminDashboard() {
 
   const diag = supabaseDiagnostics();
   const profileError = profileRes.error?.message;
-  const diagProblem = diag.serviceKeyWrong || Boolean(profileError) || !diag.urlLooksValid;
+
+  // Uji hak akses tiap tabel: membedakan "tabel tidak ada" (PGRST205)
+  // dari "tidak punya izin" (42501 permission denied).
+  const probes = await Promise.all(
+    ['profiles', 'projects', 'articles', 'skills', 'experiences', 'messages'].map(async (table) => {
+      const { error } = await db.from(table).select('id').limit(1);
+      return { table, ok: !error, code: error?.code || '', message: error?.message || '' };
+    })
+  );
+
+  const failedProbes = probes.filter((p) => !p.ok);
+  const diagProblem = diag.serviceKeyWrong || !diag.urlLooksValid || failedProbes.length > 0;
+
+  const diagHint = diag.serviceKeyWrong
+    ? 'SUPABASE_SERVICE_ROLE_KEY tampaknya berisi kunci anon (bukan service_role). Ambil kunci "service_role" di Supabase → Project Settings → API, pasang di Vercel → Environment Variables (Production), lalu deploy ulang.'
+    : failedProbes.some((p) => p.code === '42501')
+      ? 'Tabel ada, tapi role Anda tidak diberi izin. Jalankan blok "IZIN (GRANT)" di supabase/schema.sql pada Supabase → SQL Editor.'
+      : failedProbes.some((p) => p.code === 'PGRST205')
+        ? 'Ada tabel yang belum dibuat. Jalankan supabase/schema.sql pada Supabase → SQL Editor.'
+        : undefined;
 
   const stats: StatCardProps[] = [
     {
@@ -243,11 +279,8 @@ export default async function AdminDashboard() {
               ok: diag.serviceRole === 'service_role',
             },
           ]}
-          hint={
-            diag.serviceKeyWrong
-              ? 'SUPABASE_SERVICE_ROLE_KEY tampaknya berisi kunci anon (bukan service_role). Ambil kunci "service_role" di Supabase → Project Settings → API, pasang di Vercel → Environment Variables (Production), lalu deploy ulang.'
-              : undefined
-          }
+          hint={diagHint}
+          probes={probes}
           error={profileError}
         />
       )}
