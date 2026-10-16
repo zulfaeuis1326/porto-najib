@@ -40,7 +40,7 @@ const groups: { title: string; items: NavItem[] }[] = [
   },
 ];
 
-// Daftar tautan sidebar dengan penanda halaman aktif.
+// Daftar tautan sidebar (di atas panel gelap) dengan penanda halaman aktif.
 export default function AdminNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
 
@@ -51,7 +51,7 @@ export default function AdminNav({ onNavigate }: { onNavigate?: () => void }) {
     <nav className="space-y-6 px-3 py-4">
       {groups.map((group) => (
         <div key={group.title}>
-          <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.16em] text-stone-400">
+          <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.16em] text-stone-500">
             {group.title}
           </p>
           <div className="space-y-1">
@@ -65,14 +65,18 @@ export default function AdminNav({ onNavigate }: { onNavigate?: () => void }) {
                   onClick={onNavigate}
                   className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
                     active
-                      ? 'bg-orange-50 text-orange-700'
-                      : 'text-stone-600 hover:bg-stone-100 hover:text-stone-900'
+                      ? 'bg-white/10 text-white'
+                      : 'text-stone-400 hover:bg-white/5 hover:text-white'
                   }`}
                 >
                   {active && (
-                    <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-orange-600" />
+                    <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-orange-500" />
                   )}
-                  <Icon className={`h-4 w-4 shrink-0 ${active ? 'text-orange-600' : 'text-stone-400 group-hover:text-stone-600'}`} />
+                  <Icon
+                    className={`h-4 w-4 shrink-0 ${
+                      active ? 'text-orange-400' : 'text-stone-500 group-hover:text-stone-300'
+                    }`}
+                  />
                   {item.label}
                 </Link>
               );

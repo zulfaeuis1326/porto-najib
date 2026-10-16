@@ -6,6 +6,7 @@ import {
   UserRound,
   Plus,
   ArrowRight,
+  ArrowUpRight,
   type LucideIcon,
 } from 'lucide-react';
 import { supabaseAdmin, isServiceConfigured } from '@/lib/supabase';
@@ -15,30 +16,70 @@ import { btnPrimary, btnOutline } from '@/components/admin/ui';
 
 export const metadata = { title: 'Dashboard Admin', robots: { index: false, follow: false } };
 
+type Accent = 'orange' | 'emerald' | 'amber' | 'stone';
+
+const accentClass: Record<Accent, { tile: string; dot: string }> = {
+  orange: { tile: 'bg-orange-100 text-orange-600', dot: 'bg-orange-500' },
+  emerald: { tile: 'bg-emerald-100 text-emerald-600', dot: 'bg-emerald-500' },
+  amber: { tile: 'bg-amber-100 text-amber-600', dot: 'bg-amber-500' },
+  stone: { tile: 'bg-stone-200 text-stone-700', dot: 'bg-stone-400' },
+};
+
 interface StatCardProps {
   icon: LucideIcon;
   label: string;
   value: string | number;
   caption: string;
   href: string;
+  accent: Accent;
 }
 
-function StatCard({ icon: Icon, label, value, caption, href }: StatCardProps) {
+function StatCard({ icon: Icon, label, value, caption, href, accent }: StatCardProps) {
+  const a = accentClass[accent];
   return (
     <Link
       href={href}
-      className="group flex flex-col rounded-2xl border border-stone-200 bg-white p-5 shadow-[0_1px_2px_rgba(28,25,23,0.05)] transition hover:-translate-y-0.5 hover:border-orange-300 hover:shadow-md"
+      className="group flex flex-col justify-between rounded-2xl border border-stone-200 bg-white p-5 transition hover:border-stone-300 hover:shadow-md"
     >
       <div className="flex items-center justify-between">
-        <span className="grid h-10 w-10 place-items-center rounded-xl bg-orange-50 text-orange-600">
+        <span className={`grid h-11 w-11 place-items-center rounded-xl ${a.tile}`}>
           <Icon className="h-5 w-5" />
         </span>
-        <ArrowRight className="h-4 w-4 text-stone-300 transition group-hover:translate-x-0.5 group-hover:text-orange-500" />
+        <ArrowUpRight className="h-4 w-4 text-stone-300 transition group-hover:text-stone-500" />
       </div>
-      <p className="mt-4 text-3xl font-bold tabular-nums tracking-tight text-stone-900">{value}</p>
-      <p className="text-sm font-semibold text-stone-700">{label}</p>
-      <p className="mt-0.5 text-xs text-stone-500">{caption}</p>
+      <div className="mt-5">
+        <p className="text-3xl font-bold tabular-nums tracking-tight text-stone-900">{value}</p>
+        <p className="mt-0.5 text-sm font-semibold text-stone-700">{label}</p>
+        <p className="mt-1.5 flex items-center gap-1.5 text-xs text-stone-500">
+          <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${a.dot}`} />
+          <span className="truncate">{caption}</span>
+        </p>
+      </div>
     </Link>
+  );
+}
+
+function Panel({
+  title,
+  action,
+  children,
+}: {
+  title: string;
+  action?: { href: string; label: string };
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="overflow-hidden rounded-2xl border border-stone-200 bg-white">
+      <div className="flex items-center justify-between border-b border-stone-100 px-5 py-4">
+        <h2 className="text-sm font-bold text-stone-900">{title}</h2>
+        {action && (
+          <Link href={action.href} className="text-xs font-semibold text-orange-600 hover:underline">
+            {action.label}
+          </Link>
+        )}
+      </div>
+      {children}
+    </section>
   );
 }
 
@@ -71,8 +112,7 @@ export default async function AdminDashboard() {
   ]);
 
   const projects = (projectsRes.data || []) as Array<{ id: string; featured: boolean }>;
-  const articles = (articlesRes.data || []) as Array<{ id: string }>;
-  const articleCount = articles.length;
+  const articleCount = ((articlesRes.data || []) as Array<{ id: string }>).length;
   const featuredCount = projects.filter((p) => p.featured).length;
   const unread = unreadRes.count ?? 0;
   const totalMessages = messagesRes.count ?? 0;
@@ -86,13 +126,15 @@ export default async function AdminDashboard() {
       value: projects.length,
       caption: `${featuredCount} ditandai unggulan`,
       href: '/admin/projects',
+      accent: 'orange',
     },
     {
       icon: Newspaper,
       label: 'Artikel',
       value: articleCount,
-      caption: 'Tulisan yang terbit',
+      caption: 'Tulisan terbit',
       href: '/admin/articles',
+      accent: 'amber',
     },
     {
       icon: Inbox,
@@ -100,6 +142,7 @@ export default async function AdminDashboard() {
       value: totalMessages,
       caption: unread > 0 ? `${unread} belum dibaca` : 'Semua sudah dibaca',
       href: '/admin/inbox',
+      accent: 'emerald',
     },
     {
       icon: UserRound,
@@ -107,14 +150,23 @@ export default async function AdminDashboard() {
       value: profile?.name ? 'Terisi' : 'Kosong',
       caption: profile?.headline || 'Lengkapi data profil',
       href: '/admin/profile',
+      accent: 'stone',
     },
   ];
 
+  const today = new Date().toLocaleDateString('id-ID', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-7">
       <PageHeader
+        eyebrow={today}
         title={`Halo, ${profile?.name || 'Admin'}`}
-        description="Ringkasan konten dan aktivitas portfolio kamu."
+        description="Ini ringkasan konten dan aktivitas portfolio kamu."
         actions={
           <>
             <Link href="/admin/projects/new" className={btnPrimary}>
@@ -133,47 +185,37 @@ export default async function AdminDashboard() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Pesan terbaru */}
-        <section className="lg:col-span-2 rounded-2xl border border-stone-200 bg-white shadow-[0_1px_2px_rgba(28,25,23,0.05)]">
-          <div className="flex items-center justify-between border-b border-stone-100 px-5 py-4">
-            <h2 className="flex items-center gap-2 text-sm font-bold text-stone-800">
-              <Inbox className="h-4 w-4 text-orange-600" />
-              Pesan Terbaru
-            </h2>
-            <Link href="/admin/inbox" className="text-xs font-semibold text-orange-600 hover:underline">
-              Buka inbox
-            </Link>
-          </div>
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <Panel title="Pesan Terbaru" action={{ href: '/admin/inbox', label: 'Buka inbox' }}>
+            {recent.length === 0 ? (
+              <p className="px-5 py-12 text-center text-sm text-stone-500">Belum ada pesan masuk.</p>
+            ) : (
+              <ul className="divide-y divide-stone-100">
+                {recent.map((m) => (
+                  <li key={m.id} className="flex items-center gap-4 px-5 py-3.5">
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-stone-900 text-xs font-bold uppercase text-white">
+                      {m.name.slice(0, 1)}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold text-stone-900">{m.name}</p>
+                      <p className="truncate text-xs text-stone-500">{m.message}</p>
+                    </div>
+                    <span className="shrink-0 text-xs tabular-nums text-stone-400">
+                      {m.created_at
+                        ? new Date(m.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+                        : ''}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Panel>
+        </div>
 
-          {recent.length === 0 ? (
-            <p className="px-5 py-10 text-center text-sm text-stone-500">Belum ada pesan masuk.</p>
-          ) : (
-            <ul className="divide-y divide-stone-100">
-              {recent.map((m) => (
-                <li key={m.id} className="flex items-center gap-4 px-5 py-3.5">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-stone-100 text-xs font-bold uppercase text-stone-600">
-                    {m.name.slice(0, 1)}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold text-stone-800">{m.name}</p>
-                    <p className="truncate text-xs text-stone-500">{m.message}</p>
-                  </div>
-                  <span className="shrink-0 text-xs tabular-nums text-stone-400">
-                    {m.created_at
-                      ? new Date(m.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
-                      : ''}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-
-        {/* Status & aksi cepat */}
-        <div className="space-y-6">
-          <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-[0_1px_2px_rgba(28,25,23,0.05)]">
-            <h2 className="text-sm font-bold text-stone-800">Status Situs</h2>
+        <div className="space-y-5">
+          <section className="rounded-2xl border border-stone-200 bg-white p-5">
+            <h2 className="text-sm font-bold text-stone-900">Status</h2>
             <ul className="mt-4 space-y-3 text-sm">
               <li className="flex items-center justify-between">
                 <span className="text-stone-500">Database</span>
@@ -183,28 +225,24 @@ export default async function AdminDashboard() {
               </li>
               <li className="flex items-center justify-between">
                 <span className="text-stone-500">Proyek publik</span>
-                <span className="font-semibold tabular-nums text-stone-800">{projects.length}</span>
+                <span className="font-semibold tabular-nums text-stone-900">{projects.length}</span>
               </li>
               <li className="flex items-center justify-between">
                 <span className="text-stone-500">Artikel publik</span>
-                <span className="font-semibold tabular-nums text-stone-800">{articleCount}</span>
+                <span className="font-semibold tabular-nums text-stone-900">{articleCount}</span>
               </li>
               <li className="flex items-center justify-between">
-                <span className="text-stone-500">Pesan belum dibaca</span>
-                <span className="font-semibold tabular-nums text-stone-800">{unread}</span>
+                <span className="text-stone-500">Belum dibaca</span>
+                <span className="font-semibold tabular-nums text-stone-900">{unread}</span>
               </li>
             </ul>
-            <Link
-              href="/"
-              target="_blank"
-              className={`${btnOutline} mt-5 w-full`}
-            >
+            <Link href="/" target="_blank" className={`${btnOutline} mt-5 w-full`}>
               Lihat situs publik <ArrowRight className="h-4 w-4" />
             </Link>
           </section>
 
-          <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-[0_1px_2px_rgba(28,25,23,0.05)]">
-            <h2 className="text-sm font-bold text-stone-800">Aksi Cepat</h2>
+          <section className="rounded-2xl border border-stone-200 bg-white p-5">
+            <h2 className="text-sm font-bold text-stone-900">Aksi Cepat</h2>
             <div className="mt-3 space-y-2">
               {[
                 { href: '/admin/projects/new', label: 'Tambah proyek baru' },

@@ -177,11 +177,10 @@ export async function submitMessage(prev: { error?: string; ok?: boolean } | nul
 
   try {
     const { createClient } = await import('@supabase/supabase-js');
-    const db = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
-      { auth: { persistSession: false } }
-    );
+    const { supabaseUrl, supabaseAnonKey } = await import('./supabase');
+    const db = createClient(supabaseUrl || '', supabaseAnonKey || '', {
+      auth: { persistSession: false },
+    });
     const { error } = await db.from('messages').insert({ name, email, message });
     if (error) throw error;
     return { ok: true };
