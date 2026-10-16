@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" suppressHydrationWarning>
-      <body className={`${inter.className} ${jakarta.variable} bg-[#FAF7F2] text-stone-900 dark:bg-stone-950 dark:text-stone-100 antialiased`}>
+      <body className={`${inter.variable} ${jakarta.variable} font-sans bg-[#FAF7F2] text-stone-900 dark:bg-stone-950 dark:text-stone-100 antialiased`}>
         <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
