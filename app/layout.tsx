@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import SiteChrome from "@/components/layout/SiteChrome";
+import { SITE_URL } from "@/lib/site";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const jakarta = Plus_Jakarta_Sans({
@@ -11,10 +12,12 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Najib - Full Stack Developer & Technical Writer",
   description: "Portfolio website Najib - Full Stack Developer yang passionate dalam membangun aplikasi web modern dan berbagi pengetahuan melalui artikel teknis.",
   keywords: ["portfolio", "full stack developer", "web development", "Next.js", "React"],
   authors: [{ name: "Najib" }],
+  robots: { index: true, follow: true },
   openGraph: {
     title: "Najib - Full Stack Developer",
     description: "Portfolio dan blog seputar web development",

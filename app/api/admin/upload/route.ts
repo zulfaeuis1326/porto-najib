@@ -1,22 +1,36 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin, isServiceConfigured } from '@/lib/supabase';
 import { getSession } from '@/lib/session';
+import { rateLimit, tooMany } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 
 const BUCKET = 'media';
 const MAX_BYTES = 6 * 1024 * 1024; // 6 MB
 
+// Ekstensi ditentukan dari TIPE berkas (bukan nama kiriman pengguna), supaya
+// tidak ada yang bisa menitipkan .html/.js lalu dieksekusi browser.
+const ALLOWED_EXT: Record<string, string> = {
+  'image/jpeg': '.jpg',
+  'image/png': '.png',
+  'image/webp': '.webp',
+  'image/gif': '.gif',
+  'image/svg+xml': '.svg',
+  'image/avif': '.avif',
+  'image/bmp': '.bmp',
+  'application/pdf': '.pdf',
+};
+
+const EXT_FALLBACK: Record<string, string> = Object.fromEntries(
+  Object.entries(ALLOWED_EXT).map(([mime, ext]) => [ext, mime])
+);
+
 function pickExt(name: string, type: string): string {
+  if (ALLOWED_EXT[type]) return ALLOWED_EXT[type];
+  // Tipe tidak dikenal → pakai ekstensi nama berkas, tapi hanya dari daftar putih.
   const m = /\.([a-z0-9]+)$/i.exec(name);
-  if (m) return '.' + m[1].toLowerCase();
-  if (type === 'image/jpeg') return '.jpg';
-  if (type === 'image/png') return '.png';
-  if (type === 'image/webp') return '.webp';
-  if (type === 'image/gif') return '.gif';
-  if (type === 'image/svg+xml') return '.svg';
-  if (type === 'application/pdf') return '.pdf';
-  return '';
+  const ext = m ? '.' + m[1].toLowerCase() : '';
+  return EXT_FALLBACK[ext] ? ext : '';
 }
 
 // Unggah berkas dari perangkat admin ke Supabase Storage (bucket "media").
@@ -26,6 +40,14 @@ export async function POST(req: Request) {
     const session = await getSession();
     if (!session.admin) {
       return NextResponse.json({ error: 'Tidak diizinkan. Silakan login ulang.' }, { status: 401 });
+    }
+
+    // Walau sudah login, batasi unggahan agar sesi yang bocor tidak bisa
+    // dipakai membanjiri penyimpanan.
+    const ip = (req.headers.get('x-forwarded-for') || '').split(',')[0].trim() || 'tanpa-ip';
+    const rl = rateLimit(`upload:${ip}`, 60, 10 * 60 * 1000);
+    if (!rl.ok) {
+      return NextResponse.json({ error: tooMany(rl.retryAfter) }, { status: 429 });
     }
     if (!isServiceConfigured) {
       return NextResponse.json(
@@ -48,8 +70,11 @@ export async function POST(req: Request) {
 
     const type = (file.type || '').toLowerCase();
     const name = (file.name || 'file').toLowerCase();
-    const isImage = type.startsWith('image/');
-    const isPdf = type === 'application/pdf' || name.endsWith('.pdf');
+    const ext = pickExt(name, type);
+    // Tipe akhir yang dipakai = hasil daftar putih (dari MIME atau ekstensi).
+    const resolvedType = ALLOWED_EXT[type] ? type : EXT_FALLBACK[ext] || type;
+    const isImage = resolvedType.startsWith('image/');
+    const isPdf = resolvedType === 'application/pdf';
     if (!isImage && !isPdf) {
       return NextResponse.json(
         { error: 'Hanya gambar (JPG, PNG, WebP, GIF, SVG) atau PDF.' },
@@ -74,11 +99,11 @@ export async function POST(req: Request) {
       }
     }
 
-    const path = `uploads/${Date.now()}-${Math.random().toString(36).slice(2, 8)}${pickExt(name, type)}`;
+    const path = `uploads/${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`;
     const body = Buffer.from(await file.arrayBuffer());
 
     const { error: upErr } = await db.storage.from(BUCKET).upload(path, body, {
-      contentType: type || 'application/octet-stream',
+      contentType: resolvedType || 'application/octet-stream',
       upsert: false,
       cacheControl: '31536000',
     });

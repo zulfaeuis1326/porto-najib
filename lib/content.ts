@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import { supabasePublic, isSupabaseConfigured } from './supabase';
 import type { Project, Article, Profile, Skill, Experience } from '@/types';
 // Fallback lokal: dipakai saat Supabase belum dikonfigurasi (dev/build tanpa env),
@@ -15,6 +16,20 @@ const str = (v: unknown, fb = '') => (typeof v === 'string' ? v : fb);
 const arr = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x) => typeof x === 'string') : []);
 const num = (v: unknown, fb = 0) => (typeof v === 'number' ? v : fb);
 const bool = (v: unknown) => v === true;
+
+// Satu tag untuk semua konten: admin cukup memanggil revalidateTag('content')
+// dan seluruh halaman publik langsung mengambil data terbaru.
+import { CONTENT_TAG } from './cache-tags';
+export { CONTENT_TAG };
+
+// KUNCI KINERJA: data konten jarang berubah, jadi hasil query disimpan di cache
+// Next.js. Tanpa ini, setiap kunjungan menunggu perjalanan ke Supabase.
+// Nilai lama tetap disajikan selama revalidate, dan langsung dibuang begitu
+// admin menyimpan perubahan (lihat revalidateContent di lib/admin-actions.ts).
+const CACHE_OPTIONS: { tags: string[]; revalidate: number } = {
+  tags: [CONTENT_TAG],
+  revalidate: 60,
+};
 
 function mapProject(r: ProjectRow): Project {
   return {
@@ -49,17 +64,10 @@ function mapArticle(r: ArticleRow): Article {
   };
 }
 
-async function safeQuery<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
-  if (!isSupabaseConfigured) return fallback;
+// ---------- PROYEK ----------
+async function fetchProjects(): Promise<Project[]> {
+  if (!isSupabaseConfigured) return projectsData;
   try {
-    return await fn();
-  } catch {
-    return fallback;
-  }
-}
-
-export async function getProjects(): Promise<Project[]> {
-  return safeQuery(async () => {
     const { data, error } = await supabasePublic()
       .from('projects')
       .select('*')
@@ -67,8 +75,12 @@ export async function getProjects(): Promise<Project[]> {
       .order('created_at', { ascending: false });
     if (error || !data) throw error || new Error('empty');
     return (data as ProjectRow[]).map(mapProject);
-  }, projectsData);
+  } catch {
+    return projectsData;
+  }
 }
+
+export const getProjects = unstable_cache(fetchProjects, ['content:projects'], CACHE_OPTIONS);
 
 export async function getFeaturedProjects(limit = 3): Promise<Project[]> {
   const all = await getProjects();
@@ -85,16 +97,22 @@ export async function getProjectSlugs(): Promise<string[]> {
   return all.map((p) => p.slug);
 }
 
-export async function getArticles(): Promise<Article[]> {
-  return safeQuery(async () => {
+// ---------- ARTIKEL ----------
+async function fetchArticles(): Promise<Article[]> {
+  if (!isSupabaseConfigured) return articlesData;
+  try {
     const { data, error } = await supabasePublic()
       .from('articles')
       .select('*')
       .order('published_at', { ascending: false });
     if (error || !data) throw error || new Error('empty');
     return (data as ArticleRow[]).map(mapArticle);
-  }, articlesData);
+  } catch {
+    return articlesData;
+  }
 }
+
+export const getArticles = unstable_cache(fetchArticles, ['content:articles'], CACHE_OPTIONS);
 
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
   const all = await getArticles();
@@ -106,13 +124,11 @@ export async function getArticleSlugs(): Promise<string[]> {
   return all.map((a) => a.slug);
 }
 
-export async function getProfile(): Promise<Profile> {
-  return safeQuery(async () => {
-    const { data, error } = await supabasePublic()
-      .from('profiles')
-      .select('*')
-      .eq('id', 'main')
-      .single();
+// ---------- PROFIL ----------
+async function fetchProfile(): Promise<Profile> {
+  if (!isSupabaseConfigured) return profileData;
+  try {
+    const { data, error } = await supabasePublic().from('profiles').select('*').eq('id', 'main').single();
     if (error || !data) throw error || new Error('empty');
     const r = data as Record<string, unknown>;
     const links = (r.links || {}) as Record<string, string>;
@@ -131,29 +147,45 @@ export async function getProfile(): Promise<Profile> {
         instagram: links.instagram,
       },
     };
-  }, profileData);
+  } catch {
+    return profileData;
+  }
 }
 
-export async function getSkills(): Promise<Skill[]> {
-  return safeQuery(async () => {
+export const getProfile = unstable_cache(fetchProfile, ['content:profile'], CACHE_OPTIONS);
+
+// ---------- SKILL ----------
+async function fetchSkills(): Promise<Skill[]> {
+  if (!isSupabaseConfigured) return skillsData;
+  try {
     const { data, error } = await supabasePublic()
       .from('skills')
       .select('*')
       .order('sort_order', { ascending: true });
     if (error || !data) throw error || new Error('empty');
-    return (data as Record<string, unknown>[]).map((r) => ({
-      id: str(r.id),
-      name: str(r.name),
-      category: (['frontend', 'backend', 'tools', 'other'] as const).includes(r.category as never)
-        ? (r.category as Skill['category'])
-        : 'other',
-      level: (['beginner', 'intermediate', 'advanced', 'expert'] as const).includes(r.level as never)
-        ? (r.level as Skill['level'])
-        : 'beginner',
-      icon: str(r.icon) || undefined,
-    }));
-  }, skillsData);
+    return (data as Record<string, unknown>[]).map((r) => {
+      const category = str(r.category);
+      const level = str(r.level);
+      return {
+        id: str(r.id),
+        name: str(r.name),
+        category:
+          category === 'frontend' || category === 'backend' || category === 'tools'
+            ? (category as Skill['category'])
+            : 'other',
+        level:
+          level === 'intermediate' || level === 'advanced' || level === 'expert'
+            ? (level as Skill['level'])
+            : 'beginner',
+        icon: str(r.icon) || undefined,
+      };
+    });
+  } catch {
+    return skillsData;
+  }
 }
+
+export const getSkills = unstable_cache(fetchSkills, ['content:skills'], CACHE_OPTIONS);
 
 export async function getSkillsByCategory() {
   const skills = await getSkills();
@@ -165,8 +197,10 @@ export async function getSkillsByCategory() {
   };
 }
 
-export async function getExperiences(): Promise<Experience[]> {
-  return safeQuery(async () => {
+// ---------- PENGALAMAN ----------
+async function fetchExperiences(): Promise<Experience[]> {
+  if (!isSupabaseConfigured) return experiencesData;
+  try {
     const { data, error } = await supabasePublic()
       .from('experiences')
       .select('*')
@@ -182,8 +216,12 @@ export async function getExperiences(): Promise<Experience[]> {
       description: str(r.description),
       current: bool(r.current),
     }));
-  }, experiencesData);
+  } catch {
+    return experiencesData;
+  }
 }
+
+export const getExperiences = unstable_cache(fetchExperiences, ['content:experiences'], CACHE_OPTIONS);
 
 export async function getExperiencesByType() {
   const all = await getExperiences();

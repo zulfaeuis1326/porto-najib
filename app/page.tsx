@@ -4,8 +4,11 @@ import LatestArticles from '@/components/sections/LatestArticles';
 import Button from '@/components/ui/Button';
 import { ArrowRight } from 'lucide-react';
 
-// Beranda selalu menampilkan data terbaru dari CMS.
-export const dynamic = 'force-dynamic';
+// Konten diambil dari CMS lewat komponen di bawah (Hero, FeaturedProjects, ...).
+// Halaman publik dirender statis lalu disegarkan tiap 60 detik (ISR),
+// jadi pengunjung tidak menunggu query Supabase. Saat admin menyimpan
+// perubahan, cache langsung dibuang (revalidateTag/revalidatePath).
+export const revalidate = 60;
 
 export default function HomePage() {
   return (

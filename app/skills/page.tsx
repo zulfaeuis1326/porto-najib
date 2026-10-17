@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: 'Daftar skill dan teknologi yang saya kuasai sebagai Full Stack Developer.',
 };
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 const categoryLabels = {
   frontend: 'Frontend Development',

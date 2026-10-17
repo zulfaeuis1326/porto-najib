@@ -1,9 +1,19 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { supabaseAdmin } from './supabase';
 import { requireAdmin } from './session';
+import { CONTENT_TAG } from './cache-tags';
+import { rateLimit, clientIp, tooMany } from './rate-limit';
+
+// Batas pengiriman form kontak per IP: 5 pesan per 10 menit.
+const CONTACT_LIMIT = 5;
+const CONTACT_WINDOW_MS = 10 * 60 * 1000;
+
+// Batas ukuran data URL gambar yang disimpan ke database (≈2 MB).
+// Mencegah baris database membengkak karena payload raksasa.
+const MAX_DATA_URL = 2_000_000;
 
 // Kumpulkan nilai dari satu/lebih field (textarea baris, input koma, hidden ganda).
 function toList(formData: FormData, name: string): string[] {
@@ -37,6 +47,7 @@ function cleanUrl(v: FormDataEntryValue | null): string {
     s = s.slice(1, -1).trim();
   }
   if (/^[a-zA-Z]:\\/.test(s) || s.includes('\\')) return '';
+  if (s.startsWith('data:') && s.length > MAX_DATA_URL) return '';
   return normalizeImageUrl(s);
 }
 
@@ -63,7 +74,11 @@ function authed() {
 }
 
 // Segarkan seluruh pohon rute publik setelah konten berubah.
+// revalidateTag membersihkan cache data (lib/content.ts), revalidatePath
+// membersihkan HTML yang sudah dirender — keduanya supaya perubahan langsung
+// tampil tanpa menunggu.
 function revalidateContent() {
+  revalidateTag(CONTENT_TAG);
   revalidatePath('/', 'layout');
 }
 
@@ -298,6 +313,10 @@ export async function deleteMessage(id: string) {
 
 // ---------- FORM KONTAK PUBLIK (tanpa login) ----------
 export async function submitMessage(prev: { error?: string; ok?: boolean } | null, formData: FormData) {
+  // Batasi spam: paling banyak 5 pesan / 10 menit per IP.
+  const rl = rateLimit(`contact:${clientIp()}`, CONTACT_LIMIT, CONTACT_WINDOW_MS);
+  if (!rl.ok) return { error: tooMany(rl.retryAfter) };
+
   const name = String(formData.get('name') || '').trim().slice(0, 100);
   const email = String(formData.get('email') || '').trim().slice(0, 150);
   const message = String(formData.get('message') || '').trim().slice(0, 5000);

@@ -6,16 +6,24 @@ import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import Card from '@/components/ui/Card';
 import SafeImage from '@/components/ui/SafeImage';
-import { getProjects, getProjectBySlug } from '@/lib/content';
+import { getProjects, getProjectBySlug, getProjectSlugs } from '@/lib/content';
 import { formatDate } from '@/lib/utils';
+import { textToHtml } from '@/lib/text';
 
-// Konten dikelola lewat CMS — selalu ambil data terbaru, jangan cache statis.
-export const dynamic = 'force-dynamic';
+// Konten dikelola lewat CMS. Halaman ini diprerender saat build lalu
+// disegarkan tiap 60 detik; slug baru tetap dilayani otomatis (dynamicParams).
+export const revalidate = 60;
 
 interface ProjectPageProps {
   params: {
     slug: string;
   };
+}
+
+// Daftar slug yang diprerender saat build → halaman detail terbuka instan.
+export async function generateStaticParams() {
+  const slugs = await getProjectSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 // Generate metadata
@@ -106,7 +114,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             <div
               className="prose prose-slate dark:prose-invert max-w-none"
               dangerouslySetInnerHTML={{
-                __html: project.description.replace(/\n/g, '<br />')
+                __html: textToHtml(project.description)
               }}
             />
           </Card>

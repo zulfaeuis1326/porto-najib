@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description: 'Kenali lebih dekat tentang Najib, pengalaman kerja, pendidikan, dan perjalanan karir sebagai Full Stack Developer.',
 };
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export default async function AboutPage() {
   const profileData = await getProfile();

@@ -6,13 +6,20 @@ import Badge from '@/components/ui/Badge';
 import Card from '@/components/ui/Card';
 import Reveal from '@/components/ui/Reveal';
 import SafeImage from '@/components/ui/SafeImage';
-import { getArticleBySlug, getArticles } from '@/lib/content';
+import { getArticleBySlug, getArticles, getArticleSlugs } from '@/lib/content';
 import { formatDate } from '@/lib/utils';
+import { textToHtml } from '@/lib/text';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 interface ArticlePageProps {
   params: { slug: string };
+}
+
+// Prerender semua artikel saat build agar navigasi terasa instan.
+export async function generateStaticParams() {
+  const slugs = await getArticleSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
@@ -63,7 +70,7 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
           <Card className="p-6 sm:p-8 mb-8">
             <div
               className="prose prose-slate dark:prose-invert max-w-none"
-              dangerouslySetInnerHTML={{ __html: article.content.replace(/\n/g, '<br />') }}
+              dangerouslySetInnerHTML={{ __html: textToHtml(article.content) }}
             />
           </Card>
         </Reveal>
